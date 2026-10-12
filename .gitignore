@@ -1,0 +1,20 @@
+# build
+dist/
+.astro/
+
+# dépendances
+node_modules/
+
+# journaux
+npm-debug.log*
+
+# environnement
+.env
+.env.*
+
+# éditeurs et systèmes
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.vercel/

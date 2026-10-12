@@ -1,0 +1,44 @@
+---
+const links = [
+  { href: '#projets', label: 'Projets' },
+  { href: '#parcours', label: 'Parcours' },
+  { href: '#contact', label: 'Contact' },
+];
+---
+
+<header class="top" id="top">
+  <div class="wrap top-inner">
+    <a class="brand" href="#main" aria-label="Mélik Zaanouni, retour en haut">
+      <span class="brand-mark" aria-hidden="true">MZ</span><span>Mélik Zaanouni</span>
+    </a>
+    <nav class="nav" aria-label="Navigation principale">
+      {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+  </div>
+</header>
+
+<style>
+  .top{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    padding-top:env(safe-area-inset-top, 0px);
+    transition:background-color .35s ease, border-color .35s ease;
+    border-bottom:1px solid transparent;
+  }
+  .top.scrolled{background:color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border-color:var(--line-soft)}
+  .top-inner{display:flex; align-items:center; gap:24px; height:72px}
+  .brand{font-family:var(--display); font-weight:700; letter-spacing:-.02em; font-size:19px; text-decoration:none; display:flex; align-items:center; gap:10px; margin-right:auto}
+  .brand-mark{width:30px; height:30px; display:grid; place-items:center; border:1.5px solid var(--accent); border-radius:8px; font-size:13px; color:var(--accent); font-weight:700; letter-spacing:0}
+  .nav{display:flex; gap:4px}
+  .nav a{font-family:var(--display); font-weight:500; font-size:16px; text-decoration:none; color:var(--ink-soft); padding:10px 14px; border-radius:999px; transition:color .2s ease, background-color .2s ease}
+  .nav a:hover{color:var(--ink); background:var(--line-soft)}
+  @media (max-width:760px){ .nav{display:none} }
+</style>
+
+<script>
+  import { byId } from '../scripts/motion';
+
+  const top = byId('top');
+  const onScroll = () => top.classList.toggle('scrolled', scrollY > 24);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>

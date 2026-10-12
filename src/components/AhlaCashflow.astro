@@ -1,0 +1,103 @@
+---
+import CodeIcon from './icons/CodeIcon.astro';
+import CashGame from './CashGame.astro';
+
+const cards = [
+  {
+    id: 'card-dash', tab: 'Tableau de bord',
+    src: '/images/ahla-tableau-de-bord.webp', height: 735,
+    alt: 'Tableau de bord Ahla Cashflow : caisse actuelle, recettes, dépenses, solde de la période et transactions récentes.',
+    cap: 'Vue d’ensemble : caisse réelle, budgétée et projetée sur la période choisie.',
+  },
+  {
+    id: 'card-budget', tab: 'Budget',
+    src: '/images/ahla-budget.webp', height: 734,
+    alt: 'Écran Budget et prévisions : consommation globale du budget, graphique budget contre réel et répartition des dépenses par catégorie.',
+    cap: 'Budget contre réel par catégorie, avec l’écart signalé ligne par ligne.',
+  },
+  {
+    id: 'card-portal', tab: 'Portail',
+    src: '/images/ahla-portail.webp', height: 695,
+    alt: 'Portail AHLA : choix de l’espace de travail entre Ahla Cashflow et Ahla Hospitality.',
+    cap: 'Le portail AHLA : un écosystème, deux espaces de travail.',
+  },
+];
+---
+
+<article class="project flip" aria-labelledby="ahla-title">
+  <div class="wrap project-grid">
+    <div class="project-text">
+      <div class="p-meta">
+        <span class="tag live">En production</span>
+        <span class="tag">Développeur unique</span>
+        <span class="tag">2025 – 2026</span>
+      </div>
+      <h3 id="ahla-title">Ahla Cashflow</h3>
+      <p class="p-sub">Une trésorerie lisible pour une résidence étudiante, conçue et livrée seul.</p>
+      <ul class="p-list">
+        <li>SaaS B2B de gestion de trésorerie, du recueil des besoins jusqu’à la <strong>mise en production</strong>.</li>
+        <li>Position de caisse sur n’importe quelle période et <strong>email quotidien au CEO</strong> résumant les dépenses de la veille.</li>
+        <li>Tableaux de bord KPI qui comparent les mois et classent les dépenses récurrentes pour <strong>repérer les dépassements tôt</strong>.</li>
+        <li>Assistant IA agentique (<strong>Mistral</strong>) et contrôle d’accès multi-niveaux.</li>
+      </ul>
+      <div class="p-links">
+        <a class="btn primary" href="https://ahlapp.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>Ouvrir ahlapp.com</a>
+        <a class="btn" href="https://github.com/MikoOwO/ahla-cashflow-hub/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
+      </div>
+    </div>
+    <div class="deck reveal">
+      <div class="deck-cards" id="deckCards">
+        {cards.map((c, i) => (
+          <figure class="deck-card" data-pos={i} id={c.id}><img src={c.src} width="1400" height={c.height} alt={c.alt} loading="lazy" /></figure>
+        ))}
+      </div>
+      <div class="deck-tabs" role="tablist" aria-label="Écrans d’Ahla Cashflow">
+        {cards.map((c, i) => (
+          <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={c.id} data-card={c.id} tabindex={i === 0 ? undefined : -1} data-cap={c.cap}>{c.tab}</button>
+        ))}
+      </div>
+      <p class="deck-caption" id="deckCap" aria-live="polite">{cards[0].cap}</p>
+    </div>
+  </div>
+
+  <CashGame />
+</article>
+
+<style>
+  /* ---- 3D screenshot deck ---- */
+  .deck{position:relative; perspective:1800px}
+  .deck-cards{position:relative; aspect-ratio:1400/735; transform-style:preserve-3d}
+  .deck-card{
+    position:absolute; inset:0; margin:0; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:var(--surface);
+    transition:transform .8s var(--ease-out), opacity .6s ease, filter .6s ease;
+    box-shadow:0 30px 60px -28px rgba(0,0,0,.7);
+  }
+  .deck-card img{width:100%; height:100%; object-fit:cover; object-position:top left}
+  .deck-card[data-pos="0"]{transform:translate3d(0,0,0) rotateY(0); z-index:3}
+  .deck-card[data-pos="1"]{transform:translate3d(7%,-9%,-140px) rotateY(-14deg); z-index:2; filter:brightness(.55) saturate(.8)}
+  .deck-card[data-pos="2"]{transform:translate3d(13%,-17%,-280px) rotateY(-20deg); z-index:1; filter:brightness(.35) saturate(.6)}
+  .deck-tabs{display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; padding:6px; border:1px solid var(--line); border-radius:16px; width:fit-content; max-width:100%; background:color-mix(in srgb, var(--bg-deep) 60%, transparent)}
+  .deck-tabs button{font-family:var(--display); font-weight:600; font-size:15px; min-height:44px; padding:0 16px; border-radius:11px; border:0; cursor:pointer; color:var(--ink-soft); background:transparent; transition:background-color .25s ease, color .25s ease}
+  .deck-tabs button[aria-selected="true"]{background:var(--ink); color:var(--bg-deep)}
+</style>
+
+<script>
+  import { byId } from '../scripts/motion';
+  import { initTabs } from '../scripts/tabs';
+
+  const tabs = [...document.querySelectorAll<HTMLElement>('.deck-tabs [role="tab"]')];
+  const cards = [...byId('deckCards').querySelectorAll<HTMLElement>('.deck-card')];
+  const cap = byId('deckCap');
+
+  /* la carte choisie passe devant, les autres gardent leur ordre derrière */
+  const select = initTabs(tabs, (_i, tab) => {
+    const active = tab.dataset.card;
+    const rest = cards.map((c) => c.id).filter((id) => id !== active);
+    [active, ...rest].forEach((id, pos) => { byId(id ?? '').dataset.pos = String(pos); });
+    cap.textContent = tab.dataset.cap ?? '';
+  });
+  cards.forEach((c) => c.addEventListener('click', () => {
+    const i = tabs.findIndex((t) => t.dataset.card === c.id);
+    if (c.dataset.pos !== '0') select(i);
+  }));
+</script>

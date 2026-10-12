@@ -1,0 +1,105 @@
+/* ---------- Palette « Abysse » ---------- */
+:root{
+  --bg:#050E1F; --bg-deep:#020815; --surface:#0A1931; --surface-2:#10264A;
+  --line:#1C3558; --line-soft:rgba(110,170,240,.12);
+  --ink:#DDE8F6; --ink-soft:#91A7C6; --ink-faint:#6E86A9;
+  --accent:#7FD6FF; --accent-ink:#03121C;
+  --city-low:#0C203D; --city-high:#2F68B0;
+  --warn:#FFA26B;
+}
+:root{
+  --display:"Schibsted Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --text:"Schibsted Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --wrap:min(1240px, 100% - 2*clamp(20px, 5vw, 64px));
+  --ease-out:cubic-bezier(.16,1,.3,1);
+  color-scheme:dark;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top, 0px);
+  padding-bottom:env(safe-area-inset-bottom, 0px);
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth; scroll-padding-top:calc(env(safe-area-inset-top, 0px) + 80px); -webkit-text-size-adjust:100%}
+@media (pointer:fine){ html{overscroll-behavior:none} }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--text); font-size:clamp(17px, 1.05vw + 11px, 19px); line-height:1.6;
+  font-optical-sizing:auto; -webkit-font-smoothing:antialiased;
+  transition:background-color .5s ease, color .5s ease;
+  touch-action:manipulation; -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
+}
+/* blueprint grid: the page sits on drafting paper */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(var(--line-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line-soft) 1px, transparent 1px);
+  background-size:96px 96px; background-position:-1px -1px;
+  mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 85%);
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%, #000 30%, transparent 85%);
+}
+img{max-width:100%; height:auto; display:block}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+.skip{position:absolute; left:16px; top:-60px; z-index:100; background:var(--accent); color:var(--accent-ink); padding:10px 16px; border-radius:8px; font-family:var(--display); font-weight:700; text-decoration:none}
+.skip:focus{top:calc(env(safe-area-inset-top, 0px) + 12px)}
+.wrap{width:var(--wrap); margin-inline:auto; position:relative; z-index:1}
+h1,h2,h3{font-family:var(--display); font-weight:700; line-height:1.02; margin:0; text-wrap:balance; letter-spacing:-.025em}
+p{margin:0; text-wrap:pretty}
+.num{font-variant-numeric:tabular-nums lining-nums}
+.sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
+
+/* ---------- Boutons ---------- */
+.btn{
+  font-family:var(--display); font-weight:700; font-size:17px; text-decoration:none;
+  display:inline-flex; align-items:center; gap:10px; min-height:52px; padding:0 24px; border-radius:14px;
+  border:1.5px solid var(--line); color:var(--ink); background:transparent; cursor:pointer;
+  transition:transform .25s var(--ease-out), background-color .2s ease, border-color .2s ease, color .2s ease;
+}
+.btn:hover{border-color:var(--ink-soft); transform:translateY(-2px)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+.btn.primary:hover{background:color-mix(in srgb, var(--accent) 88%, #fff)}
+.btn svg{width:18px; height:18px; flex:none}
+
+/* ---------- Sections ---------- */
+section{position:relative; z-index:1}
+.sec-head{padding-top:clamp(96px, 12vw, 160px); padding-bottom:clamp(40px, 5vw, 64px); display:grid; grid-template-columns:minmax(0,1fr) minmax(0, 420px); gap:24px 64px; align-items:end}
+.sec-head h2{font-size:clamp(36px, 4.6vw, 68px); letter-spacing:-.03em}
+.sec-head p{color:var(--ink-soft)}
+@media (max-width:860px){ .sec-head{grid-template-columns:1fr} }
+
+/* ---------- Gabarit commun des projets ---------- */
+.project{padding-block:clamp(56px, 7vw, 96px); border-top:1px solid var(--line)}
+.project-grid{display:grid; grid-template-columns:minmax(0, 5fr) minmax(0, 7fr); gap:clamp(32px, 5vw, 80px); align-items:center}
+.project.flip .project-grid{grid-template-columns:minmax(0, 7fr) minmax(0, 5fr)}
+.project.flip .project-text{order:2}
+@media (max-width:960px){
+  .project-grid, .project.flip .project-grid{grid-template-columns:1fr}
+  .project.flip .project-text{order:0}
+}
+.p-meta{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px}
+.tag{font-family:var(--display); font-size:14px; font-weight:600; padding:6px 12px; border-radius:999px; border:1px solid var(--line); color:var(--ink-soft); white-space:nowrap}
+.tag.live{border-color:color-mix(in srgb, var(--accent) 55%, transparent); color:var(--accent); display:inline-flex; align-items:center; gap:8px}
+.tag.live::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--accent); animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.project h3{font-size:clamp(40px, 4.4vw, 64px); letter-spacing:-.035em}
+.p-sub{margin-top:14px; font-size:clamp(19px, 1.2vw + 8px, 22px); font-weight:500; line-height:1.4; color:var(--ink)}
+.p-list{list-style:none; margin:26px 0 0; padding:0; display:grid; gap:14px}
+.p-list li{position:relative; padding-left:26px; color:var(--ink-soft)}
+.p-list li::before{content:""; position:absolute; left:2px; top:.72em; width:12px; height:1.5px; background:var(--accent)}
+.p-list strong{color:var(--ink); font-weight:600}
+.p-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:32px}
+.p-links .btn{min-height:46px; font-size:15px; padding:0 18px; border-radius:12px}
+
+/* légendes et notes partagées par les démos */
+.deck-caption{margin-top:14px; font-size:16px; color:var(--ink-faint); min-height:1.6em}
+.plan-note{font-family:var(--display); font-size:14px; color:var(--ink-faint)}
+
+/* reveal on scroll, subtle and only for media */
+.reveal{opacity:0; transform:translateY(24px); transition:opacity .9s ease, transform 1s var(--ease-out)}
+.reveal.in{opacity:1; transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important}
+  .reveal{opacity:1; transform:none}
+}

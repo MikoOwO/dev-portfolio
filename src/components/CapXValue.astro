@@ -1,0 +1,123 @@
+---
+import CodeIcon from './icons/CodeIcon.astro';
+import Traceability from './Traceability.astro';
+
+const views = [
+  {
+    id: 'v-home', tab: 'Le site', url: 'capxvalue',
+    src: '/images/capxvalue-accueil.webp', height: 723,
+    alt: 'Page d’accueil de CapXValue : « Le business plan dont chaque chiffre se justifie ».',
+    cap: 'La promesse : un business plan sur sept ans dont chaque montant se justifie.',
+  },
+  {
+    id: 'v-hist', tab: 'Importer', url: 'capxvalue / données historiques',
+    src: '/images/capxvalue-donnees-historiques.webp', height: 885,
+    alt: 'Étape Données historiques : dépôt des PDF d’états financiers et tableau des montants lus, vérifiables un par un.',
+    cap: 'On dépose les PDF, l’OCR lit les montants, l’utilisateur vérifie ceux dont la lecture est incertaine.',
+  },
+  {
+    id: 'v-hyp', tab: 'Hypothèses', url: 'capxvalue / hypothèses',
+    src: '/images/capxvalue-hypotheses.webp', height: 882,
+    alt: 'Étape Hypothèses : les six hypothèses principales par exercice projeté, avec la moyenne historique comme valeur par défaut.',
+    cap: 'Chaque saisie recalcule le modèle. Une hypothèse vide vaut la moyenne historique du projet.',
+  },
+  {
+    id: 'v-model', tab: 'Modèle', url: 'capxvalue / modèle financier',
+    src: '/images/capxvalue-modele-financier.webp', height: 883,
+    alt: 'Étape Modèle financier : compte de résultat de 2022 à 2032, exercices historiques et projetés, exportable en Excel.',
+    cap: 'Compte de résultat, bilan et trésorerie de 2022 à 2032, exportables en Excel.',
+  },
+];
+---
+
+<article class="project" aria-labelledby="capx-title">
+  <div class="wrap project-grid">
+    <div class="project-text">
+      <div class="p-meta">
+        <span class="tag live">En production</span>
+        <span class="tag">Full-stack</span>
+        <span class="tag">2026 – aujourd’hui</span>
+      </div>
+      <h3 id="capx-title">CapXValue</h3>
+      <p class="p-sub">Un business plan sur sept ans dont chaque montant renvoie à sa source.</p>
+      <ul class="p-list">
+        <li>Plateforme SaaS fintech de <strong>valorisation d’entreprise</strong> et de préparation à la levée de fonds.</li>
+        <li><strong>Ingestion OCR</strong> des états financiers certifiés, puis projection du compte de résultat, du bilan et de la trésorerie 2026–2032.</li>
+        <li>Moteur de calcul financier en <strong>Python pur</strong>, séparé de la couche web et verrouillé par des tests automatisés.</li>
+      </ul>
+      <div class="p-links">
+        <a class="btn" href="https://github.com/MikoOwO/capxvalue/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
+      </div>
+    </div>
+    <div class="stage reveal" id="capxStage">
+      <div class="browser" id="capxBrowser">
+        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span id="capxUrl">{views[0].url}</span></div>
+        <div class="views">
+          {views.map((v, i) => (
+            <img class:list={['view', { on: i === 0 }]} id={v.id} src={v.src} width="1400" height={v.height} alt={v.alt} loading="lazy" />
+          ))}
+        </div>
+      </div>
+      <div class="view-tabs" role="tablist" aria-label="Écrans de CapXValue">
+        {views.map((v, i) => (
+          <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={v.id} data-view={v.id} data-url={v.url} tabindex={i === 0 ? undefined : -1} data-cap={v.cap}>{v.tab}</button>
+        ))}
+      </div>
+      <p class="deck-caption" id="viewCap" aria-live="polite">{views[0].cap}</p>
+    </div>
+  </div>
+
+  <Traceability />
+</article>
+
+<style>
+  /* ---- tilting browser ---- */
+  .stage{position:relative; perspective:1600px}
+  .browser{
+    border-radius:16px; overflow:hidden; background:var(--surface); border:1px solid var(--line);
+    transform:rotateY(var(--ry, -10deg)) rotateX(var(--rx, 6deg)); transform-style:preserve-3d;
+    transition:transform .6s var(--ease-out);
+    box-shadow:0 40px 80px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.02);
+  }
+  .browser-bar{display:flex; align-items:center; gap:7px; padding:12px 14px; border-bottom:1px solid var(--line); background:var(--surface-2)}
+  .browser-bar i{width:10px; height:10px; border-radius:50%; background:var(--line)}
+  .browser-bar span{margin-left:12px; font-family:var(--display); font-size:13px; color:var(--ink-faint); padding:3px 12px; border-radius:6px; background:var(--bg-deep)}
+
+  /* ---- screens in the browser ---- */
+  .views{position:relative; aspect-ratio:1400/880; background:var(--bg-deep)}
+  .view{position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top left; opacity:0; transform:scale(1.025); transition:opacity .5s ease, transform .8s var(--ease-out)}
+  .view.on{opacity:1; transform:none}
+  .view-tabs{display:flex; flex-wrap:wrap; gap:8px; margin-top:28px; padding:6px; border:1px solid var(--line); border-radius:16px; width:fit-content; max-width:100%; background:color-mix(in srgb, var(--bg-deep) 60%, transparent)}
+  .view-tabs button{font-family:var(--display); font-weight:600; font-size:15px; min-height:44px; padding:0 16px; border-radius:11px; border:0; cursor:pointer; color:var(--ink-soft); background:transparent; transition:background-color .25s ease, color .25s ease}
+  .view-tabs button[aria-selected="true"]{background:var(--ink); color:var(--bg-deep)}
+
+  @media (prefers-reduced-motion:reduce){
+    .browser{transform:none}
+  }
+</style>
+
+<script>
+  import { byId, reducedMotion as reduced } from '../scripts/motion';
+  import { initTabs } from '../scripts/tabs';
+
+  /* tilt */
+  const stage = byId('capxStage'), browser = byId('capxBrowser');
+  if (!reduced && matchMedia('(pointer:fine)').matches) {
+    stage.addEventListener('pointermove', (e) => {
+      const r = stage.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      browser.style.setProperty('--ry', (x * 14 - 4).toFixed(2) + 'deg');
+      browser.style.setProperty('--rx', (-y * 10 + 2).toFixed(2) + 'deg');
+    });
+    stage.addEventListener('pointerleave', () => { browser.style.removeProperty('--ry'); browser.style.removeProperty('--rx'); });
+  }
+
+  /* screens */
+  const tabs = [...stage.querySelectorAll<HTMLElement>('.view-tabs [role="tab"]')];
+  const cap = byId('viewCap'), url = byId('capxUrl');
+  initTabs(tabs, (i, tab) => {
+    tabs.forEach((t, j) => byId(t.dataset.view ?? '').classList.toggle('on', i === j));
+    cap.textContent = tab.dataset.cap ?? '';
+    url.textContent = tab.dataset.url ?? '';
+  });
+</script>

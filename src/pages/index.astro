@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Hero from '../components/Hero.astro';
+import Projects from '../components/Projects.astro';
+import Parcours from '../components/Parcours.astro';
+import Outils from '../components/Outils.astro';
+import Contact from '../components/Contact.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Mélik Zaanouni, développeur full-stack"
+  description="Portfolio de Mélik Zaanouni : CapXValue, Ahla Cashflow, ArchiTech. Full-stack, IA et moteurs de calcul financier."
+>
+  <Header />
+  <main id="main">
+    <Hero />
+    <Projects />
+    <Parcours />
+    <Outils />
+    <Contact />
+  </main>
+  <Footer />
+</BaseLayout>

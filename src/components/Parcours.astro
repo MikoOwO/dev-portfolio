@@ -1,0 +1,86 @@
+---
+interface Step {
+  year: string;
+  title: string;
+  text: string;
+  place?: string;
+  highlight?: boolean;
+}
+
+const steps: Step[] = [
+  {
+    year: '2026', highlight: true,
+    title: 'MSc Data Science à l’EPFL, et CapXValue',
+    text: 'Master en cours depuis septembre, en parallèle du développement full-stack de CapXValue. Bachelor en Systèmes de communication obtenu en juin (moyenne 4,93/6).',
+    place: 'EPFL, Lausanne',
+  },
+  {
+    year: '2026', highlight: true,
+    title: 'Stage IA générative chez Talan, 1er prix',
+    text: 'Deux mois sur ArchiTech, conclus par le premier prix du Summer Camp.',
+    place: 'Talan, juillet – août',
+  },
+  {
+    year: '2025',
+    title: 'Année d’échange et Ahla Cashflow',
+    text: 'Troisième année de bachelor à l’UPV, en espagnol. Conception et mise en production d’Ahla Cashflow en solo. En décembre, 1er prix du cours d’entrepreneuriat de l’EPFL avec un concept de stockage de données dans l’ADN.',
+    place: 'Universitat Politècnica de València',
+  },
+  {
+    year: '2025',
+    title: 'Associé chez Celestial Wave Design',
+    text: 'Agence web et mobile pour le marché suisse. Statut de fournisseur agréé obtenu auprès d’un laboratoire de photonique de l’EPFL.',
+  },
+  {
+    year: '2024',
+    title: 'Enseigner le code',
+    text: 'Assistant à l’EPFL pour des étudiants hors informatique, cours de programmation pour 30 filles de 9 à 11 ans, atelier sur les deepfakes à l’École internationale de Genève.',
+  },
+  {
+    year: '2023',
+    title: 'Bac mention très bien, premiers produits vendus',
+    text: 'Baccalauréat français, 17,92/20, section européenne. Plus de 150 maillots de football personnalisés produits et vendus, et le best-seller de la marque Cailloux Athletics (plus de 200 pièces).',
+    place: 'Lycée Gustave Flaubert, Tunis',
+  },
+];
+---
+
+<section id="parcours" aria-labelledby="parcours-title">
+  <div class="wrap sec-head">
+    <h2 id="parcours-title">Tunis, Lausanne, Valence, et retour.</h2>
+    <p>Une formation en télécoms et en data, quatre pays, et l’habitude de vendre ce que je fabrique depuis le lycée.</p>
+  </div>
+  <div class="wrap">
+    <ol class="timeline">
+      {steps.map((s) => (
+        <li class:list={[{ hl: s.highlight }]}>
+          <span class="t-year num">{s.year}</span>
+          <div class="t-body">
+            <h3>{s.title}</h3>
+            <p>{s.text}</p>
+            {s.place && <p class="t-place">{s.place}</p>}
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .timeline{list-style:none; margin:0; padding:0 0 24px; position:relative}
+  .timeline::before{content:""; position:absolute; left:calc(160px + 12px); top:8px; bottom:0; width:1.5px; background:linear-gradient(var(--line), var(--line) 85%, transparent)}
+  .timeline > li{display:grid; grid-template-columns:160px minmax(0,1fr); gap:0 48px; padding:22px 0; position:relative}
+  .timeline > li::before{content:""; position:absolute; left:calc(160px + 6.5px); top:33px; width:13px; height:13px; border-radius:50%; background:var(--bg); border:2px solid var(--ink-faint)}
+  .timeline > li.hl::before{border-color:var(--accent); background:var(--accent)}
+  .t-year{font-family:var(--display); font-weight:700; font-size:26px; letter-spacing:-.02em; color:var(--ink-faint); line-height:1.2; padding-top:2px}
+  .timeline > li.hl .t-year{color:var(--accent)}
+  .t-body h3{font-size:22px; font-weight:650; letter-spacing:-.015em; line-height:1.3}
+  .t-body p{color:var(--ink-soft); margin-top:6px; max-width:64ch}
+  .t-place{font-family:var(--display); font-size:15px; color:var(--ink-faint); margin-top:4px}
+  @media (max-width:640px){
+    .timeline::before{left:6px}
+    .timeline > li{grid-template-columns:1fr; padding-left:34px}
+    .timeline > li::before{left:0}
+    .t-year{font-size:22px}
+  }
+</style>

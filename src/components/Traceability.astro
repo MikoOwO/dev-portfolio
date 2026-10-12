@@ -1,0 +1,128 @@
+---
+/*
+ * « D'où vient ce chiffre ? » : graphe de traçabilité du résultat net 2028
+ * de CapXValue jusqu'à la note 6.1 du rapport annuel 2024.
+ */
+type Kind = 'real' | 'hyp' | 'calc';
+const kindLabel: Record<Kind, string> = { real: 'Réel', hyp: 'Hypothèse', calc: 'Calcul' };
+
+const nodes: { id: string; row: 'top' | 'bottom'; col: number; kind: Kind; title: string; value: string; num?: boolean }[] = [
+  { id: 'src', row: 'top', col: 1, kind: 'real', title: 'Rapport annuel 2024', value: 'Note 6.1, page 3' },
+  { id: 'g', row: 'top', col: 2, kind: 'hyp', title: 'Croissance', value: '8,5\u00a0% par an' },
+  { id: 'cost', row: 'top', col: 3, kind: 'hyp', title: 'Coûts d’exploitation', value: '83,3\u00a0% du CA' },
+  { id: 'tax', row: 'top', col: 4, kind: 'hyp', title: 'Taux d’impôt', value: '20\u00a0%' },
+  { id: 'ca25', row: 'bottom', col: 1, kind: 'real', title: 'CA 2025', value: '46\u00a0250', num: true },
+  { id: 'ca28', row: 'bottom', col: 2, kind: 'calc', title: 'CA 2028', value: '59\u00a0075', num: true },
+  { id: 'ebitda', row: 'bottom', col: 3, kind: 'calc', title: 'EBITDA 2028', value: '9\u00a0866', num: true },
+  { id: 'rn', row: 'bottom', col: 4, kind: 'calc', title: 'Résultat net 2028', value: '5\u00a0306', num: true },
+];
+
+const picks = [
+  { target: 'rn', label: 'Résultat net 2028', value: '5\u00a0306' },
+  { target: 'ebitda', label: 'EBITDA 2028', value: '9\u00a0866' },
+  { target: 'ca28', label: 'Chiffre d’affaires 2028', value: '59\u00a0075' },
+];
+---
+
+<div class="wrap trace-row">
+  <div class="trace-intro">
+    <h4>D’où vient ce chiffre&nbsp;?</h4>
+    <p>Choisissez un résultat : le moteur remonte son calcul, hypothèse par hypothèse, jusqu’à la ligne du rapport annuel.</p>
+    <div class="trace-picks" role="group" aria-label="Résultat à retracer">
+      {picks.map((p, i) => (
+        <button type="button" class="pick" data-target={p.target} aria-pressed={i === 0 ? 'true' : 'false'}><span>{p.label}</span><span class="num">{p.value}</span></button>
+      ))}
+    </div>
+    <p class="trace-formula" id="traceFormula" aria-live="polite">Résultat net = EBIT + résultat financier − impôt. Huit éléments, dont trois hypothèses et une note du rapport annuel.</p>
+  </div>
+  <div class="graph-wrap" id="graphWrap">
+    <div class="graph" id="graph" aria-hidden="true">
+      {nodes.map((n) => (
+        <div class={`node ${n.row}`} data-id={n.id} style={`--c:${n.col}`}><b class={`k-${n.kind}`}>{kindLabel[n.kind]}</b><strong>{n.title}</strong><span class:list={[{ num: n.num }]}>{n.value}</span></div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .trace-row{display:grid; grid-template-columns:minmax(0, 4fr) minmax(0, 8fr); gap:clamp(32px, 5vw, 72px); align-items:center; margin-top:clamp(64px, 8vw, 112px); padding-top:clamp(40px, 5vw, 64px); border-top:1px dashed var(--line)}
+  .trace-intro h4{font-family:var(--display); font-weight:700; font-size:clamp(26px, 2.4vw, 34px); letter-spacing:-.03em; line-height:1.1; margin:0}
+  .trace-intro > p{color:var(--ink-soft); margin-top:12px}
+  .trace-picks{display:grid; gap:10px; margin-top:24px}
+  .pick{display:flex; justify-content:space-between; align-items:center; gap:16px; min-height:56px; padding:0 20px; border-radius:14px; border:1px solid var(--line); background:transparent; color:var(--ink); font-family:var(--display); font-weight:600; font-size:17px; cursor:pointer; text-align:left; transition:background-color .25s ease, color .25s ease, border-color .25s ease}
+  .pick:hover{border-color:var(--ink-faint)}
+  .pick[aria-pressed="true"]{background:var(--ink); color:var(--bg-deep); border-color:var(--ink)}
+  .trace-formula{margin-top:18px; font-size:16px; color:var(--ink-faint); min-height:3.2em}
+  .graph-wrap{perspective:1400px; overflow-x:auto; overflow-y:visible; padding:40px 8px 48px; overscroll-behavior-x:contain}
+  .graph{
+    display:grid; grid-template-columns:repeat(4, minmax(130px, 1fr)); grid-template-rows:auto auto; gap:60px 40px; min-width:620px;
+    transform:rotateX(var(--gx, 20deg)) rotateY(var(--gy, -12deg)) rotateZ(-3deg); transform-style:preserve-3d; transition:transform .7s var(--ease-out);
+  }
+  .node{
+    grid-column:var(--c); position:relative; background:var(--ink); color:var(--bg-deep); border-radius:14px; padding:14px 16px 16px;
+    font-family:var(--display); line-height:1.25; box-shadow:0 18px 36px -18px rgba(0,0,0,.7);
+    opacity:.28; transform:translateZ(0); transition:opacity .45s ease, transform .6s var(--ease-out), background-color .4s ease, box-shadow .4s ease;
+  }
+  /* la rangée du haut héritait de .top (en-tête) dans le prototype : on garde sa géométrie */
+  .node.top{grid-row:1; z-index:50; border-bottom:1px solid transparent}
+  .node.bottom{grid-row:2}
+  .node b{display:block; font-size:13px; font-weight:700; margin-bottom:4px}
+  .node strong{display:block; font-size:16px; font-weight:700; letter-spacing:-.01em}
+  .node span{display:block; margin-top:6px; font-size:15px; color:color-mix(in srgb, var(--bg-deep) 72%, transparent)}
+  .k-real{color:#1F5FBF} .k-hyp{color:#93560A} .k-calc{color:#0B6E99}
+  .node.lit{opacity:1; transform:translateZ(26px)}
+  .node.target{background:var(--accent); box-shadow:0 0 0 6px color-mix(in srgb, var(--accent) 25%, transparent), 0 24px 40px -18px rgba(0,0,0,.8)}
+  .node.target b{color:var(--bg-deep)}
+  .node.top::after{content:""; position:absolute; left:50%; top:100%; height:60px; border-left:2px dashed var(--line); transition:border-color .4s ease}
+  .node.bottom:not([data-id="rn"])::after{content:""; position:absolute; left:100%; top:50%; width:40px; border-top:2px dashed var(--line); transition:border-color .4s ease}
+  .node.lit::after{border-color:var(--accent) !important}
+  @media (max-width:960px){ .trace-row{grid-template-columns:1fr} .graph{--gx:8deg; --gy:0deg} }
+</style>
+
+<script>
+  import { byId, reducedMotion as reduced } from '../scripts/motion';
+
+  type Target = 'rn' | 'ebitda' | 'ca28';
+  const deps: Record<string, string[]> = { rn: ['ebitda', 'tax'], ebitda: ['ca28', 'cost'], ca28: ['ca25', 'g'], ca25: ['src'] };
+  const formulas: Record<Target, string> = {
+    rn: 'Résultat net = EBIT + résultat financier − impôt. Huit éléments, dont trois hypothèses et une note du rapport annuel.',
+    ebitda: 'EBITDA = chiffre d’affaires × (1 − coûts d’exploitation). Six éléments, dont deux hypothèses.',
+    ca28: 'CA 2028 = CA 2025 × (1 + 8,5 %)³. Quatre éléments, dont une hypothèse et une note du rapport annuel.',
+  };
+
+  const graph = byId('graph'), graphWrap = byId('graphWrap'), formula = byId('traceFormula');
+  const nodes = new Map([...graph.querySelectorAll<HTMLElement>('.node')].map((n) => [n.dataset.id ?? '', n]));
+  const picks = [...document.querySelectorAll<HTMLButtonElement>('.trace-picks .pick')];
+  let timers: number[] = [];
+
+  /* allume la cible puis ses dépendances, en largeur, une par une */
+  function trace(id: Target): void {
+    timers.forEach(clearTimeout); timers = [];
+    nodes.forEach((n) => n.classList.remove('lit', 'target'));
+    const order: string[] = [], queue: string[] = [id];
+    while (queue.length) {
+      const x = queue.shift() as string;
+      if (order.includes(x)) continue;
+      order.push(x);
+      (deps[x] ?? []).forEach((d) => queue.push(d));
+    }
+    order.forEach((x, k) => {
+      const on = () => { nodes.get(x)?.classList.add('lit'); if (x === id) nodes.get(x)?.classList.add('target'); };
+      if (reduced) on(); else timers.push(window.setTimeout(on, k * 150));
+    });
+    picks.forEach((p) => p.setAttribute('aria-pressed', String(p.dataset.target === id)));
+    formula.textContent = formulas[id];
+  }
+  picks.forEach((p) => p.addEventListener('click', () => trace(p.dataset.target as Target)));
+  new IntersectionObserver(([e], obs) => { if (e.isIntersecting) { obs.disconnect(); trace('rn'); } }, { threshold: .5 }).observe(graphWrap);
+
+  if (!reduced && matchMedia('(pointer:fine) and (min-width: 961px)').matches) {
+    graphWrap.addEventListener('pointermove', (e) => {
+      const r = graphWrap.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      graph.style.setProperty('--gy', (-12 + x * 14).toFixed(2) + 'deg');
+      graph.style.setProperty('--gx', (20 - y * 12).toFixed(2) + 'deg');
+    });
+    graphWrap.addEventListener('pointerleave', () => { graph.style.removeProperty('--gy'); graph.style.removeProperty('--gx'); });
+  }
+</script>

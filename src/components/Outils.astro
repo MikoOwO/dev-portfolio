@@ -1,0 +1,26 @@
+---
+const tools = [
+  { title: 'Data et IA', text: 'Python, NumPy, Pandas, machine learning, intégration de LLM, RAG, agents IA.' },
+  { title: 'Backend', text: 'FastAPI, Node.js, PostgreSQL, SQLAlchemy, Docker.' },
+  { title: 'Frontend', text: 'React, TypeScript, Next.js, Tailwind CSS, Cesium.js pour la 3D géographique.' },
+  { title: 'Reporting', text: 'Tableaux de bord KPI, rapports automatiques par email, agent IA sur Telegram.' },
+  { title: 'Langages', text: 'Python, TypeScript et JavaScript, Java, Scala, C.' },
+  { title: 'Langues', text: 'Français et arabe natifs, anglais B2, espagnol B1.' },
+];
+---
+
+<section aria-labelledby="outils-title">
+  <div class="wrap sec-head">
+    <h2 id="outils-title">Avec quoi je travaille.</h2>
+    <p>Python pour calculer, TypeScript pour montrer, et assez de produit pour savoir quoi construire en premier.</p>
+  </div>
+  <div class="wrap tools">
+    {tools.map((t) => <div><h3>{t.title}</h3><p>{t.text}</p></div>)}
+  </div>
+</section>
+
+<style>
+  .tools{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:clamp(28px, 4vw, 56px) clamp(24px, 4vw, 64px); padding-bottom:24px}
+  .tools h3{font-size:19px; font-weight:650; letter-spacing:-.01em; padding-bottom:12px; border-bottom:1px solid var(--line); margin-bottom:14px}
+  .tools p{color:var(--ink-soft)}
+</style>

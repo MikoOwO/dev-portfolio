@@ -1,0 +1,223 @@
+---
+/*
+ * « Tenez la caisse d'octobre » : douze décisions de trésorerie,
+ * seuil de caisse 15 000 DT, budget 70 000 DT, 1 bloc = 2 000 DT.
+ */
+---
+
+<div class="wrap game" id="game">
+  <div class="game-stage">
+    <canvas id="cashCanvas" role="img" aria-label="Deux colonnes en 3D : à gauche la caisse avec son seuil de sécurité, à droite le budget dépenses du mois qui se remplit à chaque paiement."></canvas>
+    <div class="game-legend" aria-hidden="true">
+      <span><i class="sw-cash"></i>Caisse, 1 bloc = 2&nbsp;000&nbsp;DT</span>
+      <span><i class="sw-jar"></i>Budget dépenses du mois</span>
+      <span><i class="sw-warn"></i>Seuil ou dépassement</span>
+    </div>
+    <span class="plan-note game-drag" aria-hidden="true">Faites glisser pour tourner</span>
+  </div>
+  <div class="game-panel">
+    <div>
+      <h4>Tenez la caisse d’octobre.</h4>
+      <p class="game-rules">Douze transactions d’une résidence étudiante. Payez ou reportez chaque dépense : la caisse doit rester au-dessus de 15&nbsp;000&nbsp;DT et les dépenses sous le budget de 70&nbsp;000&nbsp;DT.</p>
+    </div>
+    <div class="ticks" id="ticks" aria-hidden="true"></div>
+    <div class="tx" id="tx">
+      <p class="tx-meta"><span id="txDate" class="num"></span><span id="txCat"></span></p>
+      <p class="tx-desc" id="txDesc"></p>
+      <p class="tx-amt num" id="txAmt"></p>
+      <p class="tx-flag" id="txFlag"></p>
+      <div class="tx-actions">
+        <button type="button" class="btn primary" id="gPay"></button>
+        <button type="button" class="btn" id="gDefer"></button>
+      </div>
+    </div>
+    <div class="mail-card" id="mailCard" hidden>
+      <p class="mail-from">Ahla Cashflow, résumé envoyé au CEO à 08:00</p>
+      <p class="mail-verdict" id="mailVerdict"></p>
+      <ul class="checks" id="mailChecks"></ul>
+      <dl class="mail-figs" id="mailFigs"></dl>
+      <button type="button" class="btn primary" id="gReplay">Rejouer le mois</button>
+    </div>
+    <dl class="game-stats">
+      <div><dt>Caisse</dt><dd class="num" id="sCash"></dd></div>
+      <div><dt>Budget consommé</dt><dd class="num" id="sBudget"></dd></div>
+      <div><dt>Reporté</dt><dd class="num" id="sDefer"></dd></div>
+    </dl>
+    <p class="sr" id="gLive" aria-live="polite"></p>
+  </div>
+</div>
+
+<style>
+  .game{display:grid; grid-template-columns:minmax(0, 7fr) minmax(0, 5fr); gap:clamp(24px, 3vw, 40px); margin-top:clamp(64px, 8vw, 112px); padding-top:clamp(40px, 5vw, 64px); border-top:1px dashed var(--line)}
+  .game-stage{position:relative; border:1px solid var(--line); border-radius:20px; overflow:hidden; min-height:560px; background:radial-gradient(90% 80% at 50% 10%, var(--surface) 0%, var(--bg-deep) 100%)}
+  #cashCanvas{position:absolute; inset:0; width:100%; height:100%; display:block; cursor:grab; touch-action:pan-y}
+  #cashCanvas:active{cursor:grabbing}
+  .game-legend{position:absolute; left:16px; top:16px; display:flex; flex-direction:column; gap:6px; font-family:var(--display); font-size:13px; color:var(--ink-soft); pointer-events:none}
+  .game-legend span{display:flex; align-items:center; gap:8px}
+  .game-legend i{width:12px; height:12px; border-radius:3px; display:inline-block}
+  .sw-cash{background:var(--accent)} .sw-jar{background:#3E78C2} .sw-warn{background:var(--warn)}
+  .game-drag{position:absolute; right:16px; bottom:16px; pointer-events:none}
+  .game-panel{display:flex; flex-direction:column; gap:20px; min-width:0}
+  .game-panel h4{font-family:var(--display); font-weight:700; font-size:clamp(26px, 2.4vw, 34px); letter-spacing:-.03em; line-height:1.1; margin:0}
+  .game-rules{color:var(--ink-soft); font-size:16px; margin-top:10px}
+  .ticks{display:grid; grid-template-columns:repeat(12, 1fr); gap:4px}
+  .ticks :global(i){height:5px; border-radius:3px; background:var(--line); transition:background-color .3s ease}
+  .ticks :global(i.paid){background:var(--accent)} .ticks :global(i.deferred){background:var(--ink-faint)} .ticks :global(i.cur){background:var(--ink)}
+  .tx, .mail-card{background:var(--ink); color:var(--bg-deep); border-radius:18px; padding:22px; font-family:var(--display)}
+  .tx{animation:txIn .45s var(--ease-out) both}
+  @keyframes txIn{from{opacity:0; transform:translateY(10px) rotateX(-12deg)} to{opacity:1; transform:none}}
+  .tx-meta{display:flex; justify-content:space-between; gap:12px; font-size:14px; color:color-mix(in srgb, var(--bg-deep) 65%, transparent)}
+  .tx-desc{font-size:20px; font-weight:650; letter-spacing:-.01em; line-height:1.25; margin-top:10px}
+  .tx-amt{font-size:40px; font-weight:700; letter-spacing:-.03em; line-height:1.1; margin-top:8px}
+  .tx-amt.in{color:#0B7A55} .tx-amt.out{color:#B03A1E}
+  .tx-flag{font-size:14px; margin-top:8px; color:color-mix(in srgb, var(--bg-deep) 75%, transparent); min-height:1.4em}
+  .tx-actions{display:flex; flex-wrap:wrap; gap:10px; margin-top:18px}
+  .tx-actions .btn{min-height:48px; font-size:15px; padding:0 18px; border-radius:12px}
+  .tx-actions .btn:not(.primary){border-color:color-mix(in srgb, var(--bg-deep) 25%, transparent); color:var(--bg-deep)}
+  .tx-actions .btn.primary{background:var(--bg-deep); border-color:var(--bg-deep); color:var(--ink)}
+  .tx-actions .btn:disabled{opacity:.4; cursor:not-allowed; transform:none}
+  .tx-actions .btn[hidden]{display:none}
+  .mail-from{font-size:14px; color:color-mix(in srgb, var(--bg-deep) 65%, transparent)}
+  .mail-verdict{font-size:22px; font-weight:700; letter-spacing:-.02em; line-height:1.25; margin-top:8px}
+  .checks{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:8px; font-size:15px}
+  .checks :global(li){display:flex; gap:10px; align-items:flex-start}
+  .checks :global(svg){width:18px; height:18px; flex:none; margin-top:2px}
+  .checks :global(.ok svg){color:#0B7A55} .checks :global(.ko svg){color:#B03A1E}
+  .mail-figs{display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; margin:16px 0 18px; padding-top:14px; border-top:1px solid color-mix(in srgb, var(--bg-deep) 15%, transparent)}
+  .mail-figs :global(dt){font-size:13px; color:color-mix(in srgb, var(--bg-deep) 60%, transparent)}
+  .mail-figs :global(dd){margin:0; font-weight:700; font-size:17px}
+  .mail-card .btn.primary{background:var(--bg-deep); border-color:var(--bg-deep); color:var(--ink); min-height:48px; font-size:15px}
+  .game-stats{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:1px; margin:0; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden}
+  .game-stats div{background:var(--bg); padding:14px 16px}
+  .game-stats dt{font-family:var(--display); font-size:13px; color:var(--ink-faint)}
+  .game-stats dd{margin:2px 0 0; font-family:var(--display); font-weight:700; font-size:19px; letter-spacing:-.02em}
+  .game-stats dd.warn{color:var(--warn)}
+  @media (max-width:960px){ .game{grid-template-columns:1fr} .game-stage{min-height:420px} }
+</style>
+
+<script>
+  import { byId, reducedMotion as reduced } from '../scripts/motion';
+  import { createCashScene, type CashScene } from '../scripts/cash-scene';
+
+  type Kind = 'in' | 'must' | 'urgent' | 'opt';
+  interface CashEvent { d: string; desc: string; cat: string; amt: number; k: Kind }
+
+  const START = 30000, SEUIL = 15000, BUDGET = 70000, UNIT = 2000;
+  const EVENTS: CashEvent[] = [
+    { d: '01/10', desc: 'Loyers résidents, bâtiment A', cat: 'Loyers & Hébergement', amt: 28000, k: 'in' },
+    { d: '03/10', desc: 'Salaires du personnel', cat: 'Personnel', amt: 32000, k: 'must' },
+    { d: '06/10', desc: 'Réparation de la chaudière', cat: 'Services extérieurs', amt: 6500, k: 'urgent' },
+    { d: '09/10', desc: 'Vente abonnements logiciels récurrents', cat: 'Ventes & Prestations', amt: 14200, k: 'in' },
+    { d: '10/10', desc: 'Fournitures de bureau & rames HP', cat: 'Achats & Fournisseurs', amt: 1850, k: 'opt' },
+    { d: '13/10', desc: 'Campagne réseaux sociaux de rentrée', cat: 'Marketing & Communication', amt: 9000, k: 'opt' },
+    { d: '15/10', desc: 'Facture d’électricité', cat: 'Frais généraux & Loyer', amt: 4800, k: 'must' },
+    { d: '17/10', desc: 'Loyers résidents, bâtiment B', cat: 'Loyers & Hébergement', amt: 22000, k: 'in' },
+    { d: '20/10', desc: 'Nettoyage des parties communes', cat: 'Nettoyage', amt: 5200, k: 'must' },
+    { d: '23/10', desc: 'Nouveau mobilier pour la salle commune', cat: 'Achats & Fournisseurs', amt: 14000, k: 'opt' },
+    { d: '27/10', desc: 'Maintenance de l’ascenseur', cat: 'Services extérieurs', amt: 7300, k: 'urgent' },
+    { d: '30/10', desc: 'Soirée d’intégration, billetterie', cat: 'Ventes & Prestations', amt: 6500, k: 'in' },
+  ];
+  const FLAGS: Record<Kind, string> = {
+    in: 'Recette : encaissée dès réception.',
+    must: 'Non reportable : à payer ce mois-ci.',
+    urgent: 'Urgent : la reporter coûte 30 % de plus le mois prochain.',
+    opt: 'Reportable sans frais au mois prochain.',
+  };
+  const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+  const ICON_KO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
+
+  const nf = new Intl.NumberFormat('fr-FR');
+  const dt = (n: number) => nf.format(Math.round(n)) + ' DT';
+
+  const ticks = byId('ticks'), tx = byId('tx'), mail = byId('mailCard'), live = byId('gLive');
+  const pay = byId<HTMLButtonElement>('gPay'), defer = byId<HTMLButtonElement>('gDefer'), replay = byId<HTMLButtonElement>('gReplay');
+  ticks.innerHTML = EVENTS.map(() => '<i></i>').join('');
+  const tickEls = [...ticks.children];
+
+  let scene: CashScene | null = null;
+  try {
+    scene = createCashScene(byId<HTMLCanvasElement>('cashCanvas'), { seuil: SEUIL, budget: BUDGET, unit: UNIT });
+  } catch (err) {
+    // sans WebGL, le jeu reste jouable avec le panneau seul
+    console.warn('Scène 3D indisponible', err);
+  }
+
+  interface State { i: number; cash: number; spent: number; deferred: number; urgentDeferred: number; minCash: number }
+  let s: State;
+  let busy = false;
+
+  function reset(): void {
+    s = { i: 0, cash: START, spent: 0, deferred: 0, urgentDeferred: 0, minCash: START };
+    tickEls.forEach((t) => { t.className = ''; });
+    mail.hidden = true; tx.hidden = false;
+    scene?.reset(START);
+    render(); stats();
+  }
+  function stats(): void {
+    const c = byId('sCash'), b = byId('sBudget');
+    c.textContent = dt(s.cash); c.classList.toggle('warn', s.cash < SEUIL);
+    const pct = s.spent / BUDGET * 100;
+    b.textContent = nf.format(Math.round(pct)) + ' %'; b.classList.toggle('warn', pct > 100);
+    byId('sDefer').textContent = dt(s.deferred);
+    scene?.state(s.cash < SEUIL);
+  }
+  function render(): void {
+    const e = EVENTS[s.i];
+    tickEls.forEach((t, j) => t.classList.toggle('cur', j === s.i));
+    tx.style.animation = 'none'; void tx.offsetWidth; tx.style.animation = ''; // restart the card entrance
+    byId('txDate').textContent = e.d + '/2026';
+    byId('txCat').textContent = e.cat;
+    byId('txDesc').textContent = e.desc;
+    const amt = byId('txAmt');
+    amt.textContent = (e.k === 'in' ? '+' : '−') + dt(e.amt);
+    amt.className = 'tx-amt num ' + (e.k === 'in' ? 'in' : 'out');
+    byId('txFlag').textContent = FLAGS[e.k];
+    pay.textContent = e.k === 'in' ? 'Encaisser' : 'Payer';
+    defer.hidden = e.k === 'in';
+    defer.disabled = e.k === 'must';
+    defer.textContent = e.k === 'urgent' ? 'Reporter (+30 %)' : 'Reporter';
+  }
+  function act(doPay: boolean): void {
+    if (busy || s.i >= EVENTS.length) return;
+    const e = EVENTS[s.i];
+    let msg: string;
+    if (e.k === 'in') { s.cash += e.amt; scene?.income(s.cash); msg = `Encaissé ${dt(e.amt)}.`; tickEls[s.i].className = 'paid'; }
+    else if (doPay) { s.cash -= e.amt; s.spent += e.amt; scene?.pay(s.cash, s.spent); msg = `Payé ${dt(e.amt)}.`; tickEls[s.i].className = 'paid'; }
+    else {
+      const cost = e.k === 'urgent' ? e.amt * 1.3 : e.amt;
+      s.deferred += cost; if (e.k === 'urgent') s.urgentDeferred++;
+      scene?.defer(); msg = `Reporté : ${dt(cost)} au mois prochain.`; tickEls[s.i].className = 'deferred';
+    }
+    s.minCash = Math.min(s.minCash, s.cash);
+    live.textContent = `${msg} Caisse : ${dt(s.cash)}.` + (s.cash < SEUIL ? ' Sous le seuil de sécurité.' : '');
+    stats();
+    s.i++;
+    busy = true;
+    setTimeout(() => { busy = false; if (s.i < EVENTS.length) render(); else finish(); }, reduced ? 0 : 700);
+  }
+  function finish(): void {
+    const hadFocus = tx.contains(document.activeElement);
+    tickEls.forEach((t) => t.classList.remove('cur'));
+    const checks: [boolean, string][] = [
+      [s.minCash >= SEUIL, `Caisse toujours au-dessus du seuil (point bas ${dt(s.minCash)})`],
+      [s.spent <= BUDGET, `Dépenses dans le budget (${nf.format(Math.round(s.spent / BUDGET * 100))} % consommé)`],
+      [s.urgentDeferred === 0, s.urgentDeferred ? `${s.urgentDeferred} dépense urgente reportée avec pénalité` : 'Aucune dépense urgente reportée'],
+    ];
+    const score = checks.filter((c) => c[0]).length;
+    byId('mailVerdict').textContent = score === 3 ? 'Mois maîtrisé. C’est exactement ce qu’Ahla aide à voir chaque matin.'
+      : score === 2 ? 'Presque : un point à surveiller avant le mois prochain.'
+      : 'Le mois a dérapé. Rejouez pour trouver le bon arbitrage.';
+    byId('mailChecks').innerHTML = checks.map(([ok, t]) => `<li class="${ok ? 'ok' : 'ko'}">${ok ? ICON_OK : ICON_KO}<span>${t}</span></li>`).join('');
+    byId('mailFigs').innerHTML = [
+      ['Caisse finale', dt(s.cash)], ['Dépenses payées', dt(s.spent)],
+      ['Reporté au mois prochain', dt(s.deferred)], ['Score', score + ' / 3'],
+    ].map(([a, b]) => `<div><dt>${a}</dt><dd class="num">${b}</dd></div>`).join('');
+    tx.hidden = true; mail.hidden = false;
+    if (hadFocus) replay.focus({ preventScroll: true });
+  }
+  pay.addEventListener('click', () => act(true));
+  defer.addEventListener('click', () => act(false));
+  replay.addEventListener('click', () => { reset(); pay.focus({ preventScroll: true }); });
+
+  reset();
+</script>

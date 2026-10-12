@@ -1,0 +1,52 @@
+---
+const email = 'melik.zaanouni@epfl.ch';
+---
+
+<section class="contact" id="contact" aria-labelledby="contact-title">
+  <div class="wrap">
+    <h2 id="contact-title">Un produit à construire&nbsp;? Parlons-en.</h2>
+    <div class="mail">
+      <a href={`mailto:${email}`}>{email}</a>
+      <button class="btn" type="button" id="copyBtn" data-email={email}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M5 15V5a1 1 0 0 1 1-1h10"></path></svg>Copier l’adresse</button>
+    </div>
+    <dl class="contact-meta">
+      <div><dt>Téléphone</dt><dd><a href="tel:+41779794983" class="num">+41&nbsp;77&nbsp;979&nbsp;49&nbsp;83</a></dd></div>
+      <div><dt>GitHub</dt><dd><a href="https://github.com/MikoOwO" target="_blank" rel="noopener">MikoOwO</a></dd></div>
+      <div><dt>Basé à</dt><dd>Lausanne, Suisse</dd></div>
+      <div><dt>Nationalités</dt><dd>Française et tunisienne</dd></div>
+    </dl>
+  </div>
+</section>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<style>
+  .contact{padding-block:clamp(120px, 14vw, 200px) 64px}
+  .contact h2{font-size:clamp(42px, 7vw, 112px); letter-spacing:-.04em; max-width:13ch}
+  .mail{
+    display:inline-flex; align-items:center; gap:16px; margin-top:48px; flex-wrap:wrap;
+  }
+  .mail a{font-family:var(--display); font-weight:700; font-size:clamp(22px, 3vw, 40px); letter-spacing:-.02em; text-decoration:none; overflow-wrap:anywhere; background:linear-gradient(var(--accent), var(--accent)) 0 100%/0 3px no-repeat; transition:background-size .5s var(--ease-out)}
+  .mail a:hover{background-size:100% 3px}
+  .contact-meta{display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:24px; margin-top:72px; padding-top:28px; border-top:1px solid var(--line)}
+  .contact-meta dt{font-family:var(--display); font-size:14px; color:var(--ink-faint)}
+  .contact-meta dd{margin:4px 0 0}
+  .contact-meta a{text-underline-offset:4px; text-decoration-color:var(--line)}
+  .contact-meta a:hover{text-decoration-color:var(--accent)}
+  .toast{position:fixed; left:50%; bottom:calc(env(safe-area-inset-bottom, 0px) + 24px); transform:translate(-50%, 220%); visibility:hidden; background:var(--ink); color:var(--bg-deep); font-family:var(--display); font-weight:600; padding:12px 20px; border-radius:12px; z-index:60; transition:transform .45s var(--ease-out)}
+  .toast.show{transform:translate(-50%, 0); visibility:visible}
+</style>
+
+<script>
+  import { byId } from '../scripts/motion';
+
+  const toast = byId('toast'), copyBtn = byId('copyBtn');
+  let hideTimer = 0;
+  function say(msg: string): void {
+    toast.textContent = msg; toast.classList.add('show');
+    clearTimeout(hideTimer); hideTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+  }
+  copyBtn.addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(copyBtn.dataset.email ?? ''); say('Adresse copiée'); }
+    catch { say('Copie impossible ici : sélectionnez l’adresse à la main'); }
+  });
+</script>
