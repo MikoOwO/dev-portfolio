@@ -95,12 +95,14 @@ section{position:relative; z-index:1}
 
 /* ---------- Écrans qui changent au défilement (CapXValue, Ahla) ----------
    Le rail (.steps-track) s'allonge de 60svh par écran supplémentaire ; le média
-   (.steps-sticky) reste épinglé, centré sous l'en-tête, pendant ce défilement. */
+   (.steps-sticky) reste épinglé, centré sous l'en-tête, pendant ce défilement.
+   Sur ordinateur seulement : sur téléphone, les écrans se choisissent par onglets. */
 .steps-track{display:flow-root}
-.steps-track::after{content:""; display:block; height:calc((var(--steps, 1) - 1) * 60svh)}
-.steps-sticky{position:sticky; top:max(88px, calc(50svh + 36px - var(--sticky-h, 0px) / 2))}
-.steps-sticky .deck-caption{min-height:3.2em}
+.steps-sticky{position:relative}
 @media (min-width:961px){
+  .steps-track::after{content:""; display:block; height:calc((var(--steps, 1) - 1) * 60svh)}
+  .steps-sticky{position:sticky; top:max(88px, calc(50svh + 36px - var(--sticky-h, 0px) / 2))}
+  .steps-sticky .deck-caption{min-height:3.2em}
   .project-grid.has-steps{align-items:start}
   .project-grid.has-steps > .project-text{position:sticky; top:max(88px, calc(50svh + 36px - var(--sticky-h, 0px) / 2))}
 }

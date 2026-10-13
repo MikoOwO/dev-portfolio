@@ -10,8 +10,8 @@ Transformer le prototype en projet Astro statique, maintenable, déployé sur Ve
 
 ## Contenu (ne pas inventer de chiffres ni de liens)
 - Hero : ville 3D de colonnes (three.js, InstancedMesh) qui réagit au curseur.
-- CapXValue (projet principal, capxvalue.com) : navigateur incliné avec 4 écrans en onglets qui défilent au scroll, graphe de traçabilité interactif (Résultat net 2028 = 5 306, EBITDA = 9 866, CA 2028 = 59 075, CA 2025 = 46 250, note 6.1 du rapport annuel 2024).
-- Ahla Cashflow : pile 3D de 3 captures qui défilent au scroll + jeu « Tenez la caisse d'octobre » (5 transactions, seuil 15 000 €, budget 45 000 €, 1 bloc = 2 000 €).
+- CapXValue (projet principal, capxvalue.com) : navigateur incliné avec 4 écrans en onglets qui défilent au scroll sur ordinateur (simples onglets sur téléphone), graphe de traçabilité interactif (Résultat net 2028 = 5 306, EBITDA = 9 866, CA 2028 = 59 075, CA 2025 = 46 250, note 6.1 du rapport annuel 2024).
+- Ahla Cashflow : pile 3D de 3 captures qui défilent au scroll sur ordinateur (simples onglets sur téléphone) + jeu « Tenez la caisse d'octobre » (5 transactions, seuil 15 000 €, budget 45 000 €, 1 bloc = 2 000 €).
 - Tous les montants affichés sur le site sont en euros.
 - ArchiTech : plan 2D qui s'élève en 3D (three.js), lien vers la démo vidéo (Google Drive). Captures à venir.
 - Parcours (frise), outils, contact.

@@ -1,13 +1,8 @@
 import { reducedMotion } from './motion';
 
-/**
- * Fait défiler des étapes au scroll : `sticky` reste épinglé pendant que
- * `track` défile, et la distance parcourue choisit l'étape affichée.
- * La hauteur ajoutée au rail vient de la variable CSS --steps (voir global.css).
- *
- * Renvoie `goTo(i)`, qui fait défiler la page jusqu'à l'étape i
- * (pour garder onglets et défilement synchronisés).
- */
+/** Même seuil que la mise en page sur deux colonnes (global.css) : en dessous, pas de défilement par étapes. */
+const desktop = matchMedia('(min-width: 961px)');
+
 /**
  * Expose la hauteur de l'élément en --sticky-h, pour le centrer sous l'en-tête (voir global.css).
  * On garde la plus grande hauteur vue (remise à zéro au redimensionnement) : une légende
@@ -23,6 +18,16 @@ export function observeStickyHeight(el: HTMLElement): void {
   addEventListener('resize', () => { max = 0; apply(); });
 }
 
+/**
+ * Fait défiler des étapes au scroll : `sticky` reste épinglé pendant que
+ * `track` défile, et la distance parcourue choisit l'étape affichée.
+ * La hauteur ajoutée au rail vient de la variable CSS --steps (voir global.css).
+ *
+ * Sur téléphone le mécanisme est coupé : les onglets changent l'écran sans faire défiler.
+ *
+ * Renvoie `goTo(i)`, qui fait défiler la page jusqu'à l'étape i
+ * (pour garder onglets et défilement synchronisés).
+ */
 export function initScrollSteps(
   track: HTMLElement,
   sticky: HTMLElement,
@@ -42,6 +47,7 @@ export function initScrollSteps(
 
   function update(): void {
     ticking = false;
+    if (!desktop.matches) return;
     if (programmatic) {
       if (Math.abs(scrollY - targetY) < 2) release();
       return;
@@ -57,11 +63,13 @@ export function initScrollSteps(
 
   addEventListener('scroll', () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } }, { passive: true });
   addEventListener('resize', update);
+  desktop.addEventListener('change', update);
   update();
 
   return (i: number) => {
-    const { distance, travelled } = geometry();
     current = i;
+    if (!desktop.matches) return;
+    const { distance, travelled } = geometry();
     targetY = Math.round(scrollY - travelled + (i + .5) / count * distance);
     programmatic = true;
     clearTimeout(releaseTimer);
