@@ -31,7 +31,9 @@ const SEGS: [number, number, number, number][] = [
 ];
 const WINDOWS: [number, number][] = [[2.5,0],[10.2,0],[2.5,8],[9.4,8]];
 
-export function initPlan(canvas: HTMLCanvasElement, btn: HTMLButtonElement, note: HTMLElement): void {
+export interface PlanStrings { to3d: string; to2d: string; drag: string; built: string }
+
+export function initPlan(canvas: HTMLCanvasElement, btn: HTMLButtonElement, note: HTMLElement, text: PlanStrings): void {
   const renderer = createRenderer({ canvas, antialias: true, alpha: true });
   const scene = new Scene();
   const camera = new PerspectiveCamera(34, 1, .1, 100);
@@ -75,8 +77,8 @@ export function initPlan(canvas: HTMLCanvasElement, btn: HTMLButtonElement, note
   btn.addEventListener('click', () => {
     target = target ? 0 : 1;
     btn.setAttribute('aria-pressed', String(!!target));
-    btn.textContent = target ? 'Revenir au plan 2D' : 'Passer en 3D';
-    note.textContent = target ? 'Volume généré depuis le plan' : 'Faites glisser pour tourner';
+    btn.textContent = target ? text.to2d : text.to3d;
+    note.textContent = target ? text.built : text.drag;
     kick();
   });
   canvas.addEventListener('pointerdown', (e) => { dragging = true; lastX = e.clientX; canvas.setPointerCapture(e.pointerId); });

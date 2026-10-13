@@ -2,26 +2,17 @@
 import CodeIcon from './icons/CodeIcon.astro';
 import ExternalIcon from './icons/ExternalIcon.astro';
 import CashGame from './CashGame.astro';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const dict = useTranslations(lang);
+const t = dict.ahla;
 
 const cards = [
-  {
-    id: 'card-dash', tab: 'Tableau de bord',
-    src: '/images/ahla-tableau-de-bord.webp', height: 735,
-    alt: 'Tableau de bord Ahla Cashflow : caisse actuelle, recettes, dépenses, solde de la période et transactions récentes.',
-    cap: 'Vue d’ensemble : caisse réelle, budgétée et projetée sur la période choisie.',
-  },
-  {
-    id: 'card-budget', tab: 'Budget',
-    src: '/images/ahla-budget.webp', height: 734,
-    alt: 'Écran Budget et prévisions : consommation globale du budget, graphique budget contre réel et répartition des dépenses par catégorie.',
-    cap: 'Budget contre réel par catégorie, avec l’écart signalé ligne par ligne.',
-  },
-  {
-    id: 'card-portal', tab: 'Portail',
-    src: '/images/ahla-portail.webp', height: 695,
-    alt: 'Portail AHLA : choix de l’espace de travail entre Ahla Cashflow et Ahla Hospitality.',
-    cap: 'Le portail AHLA : un écosystème, deux espaces de travail.',
-  },
+  { id: 'card-dash', src: '/images/ahla-tableau-de-bord.webp', height: 735, ...t.cards.dash },
+  { id: 'card-budget', src: '/images/ahla-budget.webp', height: 734, ...t.cards.budget },
+  { id: 'card-portal', src: '/images/ahla-portail.webp', height: 695, ...t.cards.portal },
 ];
 ---
 
@@ -29,21 +20,18 @@ const cards = [
   <div class="wrap project-grid has-steps">
     <div class="project-text">
       <div class="p-meta">
-        <span class="tag live">En production</span>
-        <span class="tag">Développeur unique</span>
-        <span class="tag">2025 – 2026</span>
+        <span class="tag live">{t.tags.live}</span>
+        <span class="tag">{t.tags.role}</span>
+        <span class="tag">{t.tags.period}</span>
       </div>
       <h3 id="ahla-title">Ahla Cashflow</h3>
-      <p class="p-sub">Une trésorerie lisible pour une résidence étudiante, conçue et livrée seul.</p>
+      <p class="p-sub">{t.sub}</p>
       <ul class="p-list">
-        <li>SaaS B2B de gestion de trésorerie, du recueil des besoins jusqu’à la <strong>mise en production</strong>.</li>
-        <li>Position de caisse sur n’importe quelle période et <strong>email quotidien au CEO</strong> résumant les dépenses de la veille.</li>
-        <li>Tableaux de bord KPI qui comparent les mois et classent les dépenses récurrentes pour <strong>repérer les dépassements tôt</strong>.</li>
-        <li>Assistant IA agentique (<strong>Mistral</strong>) et contrôle d’accès multi-niveaux.</li>
+        {t.list.map((item) => <li set:html={item} />)}
       </ul>
       <div class="p-links">
-        <a class="btn primary" href="https://ahlapp.com" target="_blank" rel="noopener"><ExternalIcon />Ouvrir ahlapp.com</a>
-        <a class="btn" href="https://github.com/MikoOwO/ahla-cashflow-hub/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
+        <a class="btn primary" href="https://ahlapp.com" target="_blank" rel="noopener"><ExternalIcon />{t.open}</a>
+        <a class="btn" href="https://github.com/MikoOwO/ahla-cashflow-hub/tree/main" target="_blank" rel="noopener"><CodeIcon />{dict.projects.sourceCode}</a>
       </div>
     </div>
     <div class="steps-track" id="deckTrack" style={`--steps:${cards.length}`}>
@@ -53,7 +41,7 @@ const cards = [
             <figure class="deck-card" data-pos={i} id={c.id}><img src={c.src} width="1400" height={c.height} alt={c.alt} loading="lazy" /></figure>
           ))}
         </div>
-        <div class="deck-tabs" role="tablist" aria-label="Écrans d’Ahla Cashflow">
+        <div class="deck-tabs" role="tablist" aria-label={t.tabsLabel}>
           {cards.map((c, i) => (
             <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={c.id} data-card={c.id} tabindex={i === 0 ? undefined : -1} data-cap={c.cap}>{c.tab}</button>
           ))}
@@ -63,7 +51,7 @@ const cards = [
     </div>
   </div>
 
-  <CashGame />
+  <CashGame lang={lang} />
 </article>
 
 <style>

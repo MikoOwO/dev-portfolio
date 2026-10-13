@@ -1,21 +1,17 @@
 ---
-const tools = [
-  { title: 'Data et IA', text: 'Python, NumPy, Pandas, machine learning, intégration de LLM, RAG, agents IA.' },
-  { title: 'Backend', text: 'FastAPI, Node.js, PostgreSQL, SQLAlchemy, Docker.' },
-  { title: 'Frontend', text: 'React, TypeScript, Next.js, Tailwind CSS, Cesium.js pour la 3D géographique.' },
-  { title: 'Reporting', text: 'Tableaux de bord KPI, rapports automatiques par email, agent IA sur Telegram.' },
-  { title: 'Langages', text: 'Python, TypeScript et JavaScript, Java, Scala, C.' },
-  { title: 'Langues', text: 'Français et arabe natifs, anglais B2, espagnol B1.' },
-];
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).tools;
 ---
 
 <section aria-labelledby="outils-title">
   <div class="wrap sec-head">
-    <h2 id="outils-title">Avec quoi je travaille.</h2>
-    <p>Python pour la data et les calculs, TypeScript pour les interfaces : les outils que j’utilise au quotidien sur mes projets.</p>
+    <h2 id="outils-title">{t.title}</h2>
+    <p>{t.intro}</p>
   </div>
   <div class="wrap tools">
-    {tools.map((t) => <div><h3>{t.title}</h3><p>{t.text}</p></div>)}
+    {t.groups.map((g) => <div><h3>{g.title}</h3><p>{g.text}</p></div>)}
   </div>
 </section>
 

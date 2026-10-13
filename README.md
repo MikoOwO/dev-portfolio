@@ -17,8 +17,9 @@ Contexte et règles pour Claude Code : voir `CLAUDE.md`.
 ```
 public/images/        captures d'écran (WebP)
 src/layouts/          BaseLayout : <head>, polices, apparition au défilement
-src/pages/index.astro assemble les sections
-src/components/       un composant par section
+src/pages/             index.astro (français, /) et en/index.astro (anglais, /en/)
+src/i18n/              textes du site : fr.ts et en.ts, même structure
+src/components/       un composant par section (Home assemble la page dans une langue)
   Header, Hero, Projects (CapXValue + Traceability, AhlaCashflow + CashGame, ArchiTech),
   Parcours, Outils, Contact, Footer
 src/scripts/          code client

@@ -3,22 +3,26 @@
  * « Tenez la caisse d'octobre » : cinq décisions de trésorerie,
  * seuil de caisse 15 000 €, budget 45 000 €, 1 bloc = 2 000 €.
  */
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).game;
 ---
 
-<div class="wrap game" id="game">
+<div class="wrap game" id="game" data-strings={JSON.stringify(t.client)}>
   <div class="game-stage">
-    <canvas id="cashCanvas" role="img" aria-label="Deux colonnes en 3D : à gauche la caisse avec son seuil de sécurité, à droite le budget dépenses du mois qui se remplit à chaque paiement."></canvas>
+    <canvas id="cashCanvas" role="img" aria-label={t.canvasLabel}></canvas>
     <div class="game-legend" aria-hidden="true">
-      <span><i class="sw-cash"></i>Caisse, 1 bloc = 2&nbsp;000&nbsp;€</span>
-      <span><i class="sw-jar"></i>Budget dépenses du mois</span>
-      <span><i class="sw-warn"></i>Seuil ou dépassement</span>
+      <span><i class="sw-cash"></i>{t.legend.cash}</span>
+      <span><i class="sw-jar"></i>{t.legend.jar}</span>
+      <span><i class="sw-warn"></i>{t.legend.warn}</span>
     </div>
-    <span class="plan-note game-drag" aria-hidden="true">Faites glisser pour tourner</span>
+    <span class="plan-note game-drag" aria-hidden="true">{t.drag}</span>
   </div>
   <div class="game-panel">
     <div>
-      <h4>Tenez la caisse d’octobre.</h4>
-      <p class="game-rules">Cinq transactions d’une résidence étudiante. Payez ou reportez chaque dépense : la caisse doit rester au-dessus de 15&nbsp;000&nbsp;€ et les dépenses sous le budget de 45&nbsp;000&nbsp;€.</p>
+      <h4>{t.title}</h4>
+      <p class="game-rules">{t.rules}</p>
     </div>
     <div class="ticks" id="ticks" aria-hidden="true"></div>
     <div class="tx" id="tx">
@@ -32,16 +36,16 @@
       </div>
     </div>
     <div class="mail-card" id="mailCard" hidden>
-      <p class="mail-from">Ahla Cashflow, résumé envoyé au CEO à 08:00</p>
+      <p class="mail-from">{t.mailFrom}</p>
       <p class="mail-verdict" id="mailVerdict"></p>
       <ul class="checks" id="mailChecks"></ul>
       <dl class="mail-figs" id="mailFigs"></dl>
-      <button type="button" class="btn primary" id="gReplay">Rejouer le mois</button>
+      <button type="button" class="btn primary" id="gReplay">{t.replay}</button>
     </div>
     <dl class="game-stats">
-      <div><dt>Caisse</dt><dd class="num" id="sCash"></dd></div>
-      <div><dt>Budget consommé</dt><dd class="num" id="sBudget"></dd></div>
-      <div><dt>Reporté</dt><dd class="num" id="sDefer"></dd></div>
+      <div><dt>{t.stats.cash}</dt><dd class="num" id="sCash"></dd></div>
+      <div><dt>{t.stats.budget}</dt><dd class="num" id="sBudget"></dd></div>
+      <div><dt>{t.stats.deferred}</dt><dd class="num" id="sDefer"></dd></div>
     </dl>
     <p class="sr" id="gLive" aria-live="polite"></p>
   </div>
@@ -98,9 +102,11 @@
 <script>
   import { byId, reducedMotion as reduced } from '../scripts/motion';
   import { createCashScene, type CashScene } from '../scripts/cash-scene';
+  import { fill, readStrings } from '../scripts/i18n';
+  import type { GameStrings } from '../i18n';
 
   type Kind = 'in' | 'must' | 'urgent' | 'opt';
-  interface CashEvent { d: string; desc: string; cat: string; amt: number; k: Kind }
+  interface CashEvent { amt: number; k: Kind }
 
   /*
    * Cinq décisions qui pèsent chacune sur un critère du bilan :
@@ -108,24 +114,22 @@
    * au-dessus du seuil et les dépenses dans le budget.
    */
   const START = 30000, SEUIL = 15000, BUDGET = 45000, UNIT = 2000;
+  // les textes (date, libellé, catégorie) suivent le même ordre dans game.client.events des dictionnaires
   const EVENTS: CashEvent[] = [
-    { d: '01/10', desc: 'Loyers résidents, bâtiment A', cat: 'Loyers & Hébergement', amt: 28000, k: 'in' },
-    { d: '03/10', desc: 'Salaires du personnel', cat: 'Personnel', amt: 32000, k: 'must' },
-    { d: '06/10', desc: 'Réparation de la chaudière', cat: 'Services extérieurs', amt: 6500, k: 'urgent' },
-    { d: '10/10', desc: 'Nouveau mobilier pour la salle commune', cat: 'Achats & Fournisseurs', amt: 14000, k: 'opt' },
-    { d: '17/10', desc: 'Loyers résidents, bâtiment B', cat: 'Loyers & Hébergement', amt: 22000, k: 'in' },
+    { amt: 28000, k: 'in' },      // loyers, bâtiment A
+    { amt: 32000, k: 'must' },    // salaires
+    { amt: 6500, k: 'urgent' },   // chaudière
+    { amt: 14000, k: 'opt' },     // mobilier
+    { amt: 22000, k: 'in' },      // loyers, bâtiment B
   ];
-  const FLAGS: Record<Kind, string> = {
-    in: 'Recette : encaissée dès réception.',
-    must: 'Non reportable : à payer ce mois-ci.',
-    urgent: 'Urgent : la reporter coûte 30 % de plus le mois prochain.',
-    opt: 'Reportable sans frais au mois prochain.',
-  };
+  const T = readStrings<GameStrings>(byId('game'));
   const ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
   const ICON_KO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
-  const nf = new Intl.NumberFormat('fr-FR');
-  const eur = (n: number) => nf.format(Math.round(n)) + ' €';
+  const money = new Intl.NumberFormat(T.locale, { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+  const percent = new Intl.NumberFormat(T.locale, { style: 'percent', maximumFractionDigits: 0 });
+  const eur = (n: number) => money.format(Math.round(n));
+  const pctOf = (n: number) => percent.format(Math.round(n) / 100);
 
   const ticks = byId('ticks'), tx = byId('tx'), mail = byId('mailCard'), live = byId('gLive');
   const pay = byId<HTMLButtonElement>('gPay'), defer = byId<HTMLButtonElement>('gDefer'), replay = byId<HTMLButtonElement>('gReplay');
@@ -134,7 +138,13 @@
 
   let scene: CashScene | null = null;
   try {
-    scene = createCashScene(byId<HTMLCanvasElement>('cashCanvas'), { seuil: SEUIL, budget: BUDGET, unit: UNIT });
+    scene = createCashScene(byId<HTMLCanvasElement>('cashCanvas'), {
+      seuil: SEUIL, budget: BUDGET, unit: UNIT,
+      labels: {
+        cash: T.scene.cash, jar: T.scene.jar,
+        seuil: fill(T.scene.seuil, { amount: eur(SEUIL) }), budget: fill(T.scene.budget, { amount: eur(BUDGET) }),
+      },
+    });
   } catch (err) {
     // sans WebGL, le jeu reste jouable avec le panneau seul
     console.warn('Scène 3D indisponible', err);
@@ -155,39 +165,39 @@
     const c = byId('sCash'), b = byId('sBudget');
     c.textContent = eur(s.cash); c.classList.toggle('warn', s.cash < SEUIL);
     const pct = s.spent / BUDGET * 100;
-    b.textContent = nf.format(Math.round(pct)) + ' %'; b.classList.toggle('warn', pct > 100);
+    b.textContent = pctOf(pct); b.classList.toggle('warn', pct > 100);
     byId('sDefer').textContent = eur(s.deferred);
     scene?.state(s.cash < SEUIL);
   }
   function render(): void {
-    const e = EVENTS[s.i];
+    const e = EVENTS[s.i], text = T.events[s.i];
     tickEls.forEach((t, j) => t.classList.toggle('cur', j === s.i));
     tx.style.animation = 'none'; void tx.offsetWidth; tx.style.animation = ''; // restart the card entrance
-    byId('txDate').textContent = e.d + '/2026';
-    byId('txCat').textContent = e.cat;
-    byId('txDesc').textContent = e.desc;
+    byId('txDate').textContent = text.date;
+    byId('txCat').textContent = text.cat;
+    byId('txDesc').textContent = text.desc;
     const amt = byId('txAmt');
     amt.textContent = (e.k === 'in' ? '+' : '−') + eur(e.amt);
     amt.className = 'tx-amt num ' + (e.k === 'in' ? 'in' : 'out');
-    byId('txFlag').textContent = FLAGS[e.k];
-    pay.textContent = e.k === 'in' ? 'Encaisser' : 'Payer';
+    byId('txFlag').textContent = T.flags[e.k];
+    pay.textContent = e.k === 'in' ? T.actions.collect : T.actions.pay;
     defer.hidden = e.k === 'in';
     defer.disabled = e.k === 'must';
-    defer.textContent = e.k === 'urgent' ? 'Reporter (+30 %)' : 'Reporter';
+    defer.textContent = e.k === 'urgent' ? T.actions.deferUrgent : T.actions.defer;
   }
   function act(doPay: boolean): void {
     if (busy || s.i >= EVENTS.length) return;
     const e = EVENTS[s.i];
     let msg: string;
-    if (e.k === 'in') { s.cash += e.amt; scene?.income(s.cash); msg = `Encaissé ${eur(e.amt)}.`; tickEls[s.i].className = 'paid'; }
-    else if (doPay) { s.cash -= e.amt; s.spent += e.amt; scene?.pay(s.cash, s.spent); msg = `Payé ${eur(e.amt)}.`; tickEls[s.i].className = 'paid'; }
+    if (e.k === 'in') { s.cash += e.amt; scene?.income(s.cash); msg = fill(T.live.collected, { amount: eur(e.amt) }); tickEls[s.i].className = 'paid'; }
+    else if (doPay) { s.cash -= e.amt; s.spent += e.amt; scene?.pay(s.cash, s.spent); msg = fill(T.live.paid, { amount: eur(e.amt) }); tickEls[s.i].className = 'paid'; }
     else {
       const cost = e.k === 'urgent' ? e.amt * 1.3 : e.amt;
       s.deferred += cost; if (e.k === 'urgent') s.urgentDeferred++;
-      scene?.defer(); msg = `Reporté : ${eur(cost)} au mois prochain.`; tickEls[s.i].className = 'deferred';
+      scene?.defer(); msg = fill(T.live.deferred, { amount: eur(cost) }); tickEls[s.i].className = 'deferred';
     }
     s.minCash = Math.min(s.minCash, s.cash);
-    live.textContent = `${msg} Caisse : ${eur(s.cash)}.` + (s.cash < SEUIL ? ' Sous le seuil de sécurité.' : '');
+    live.textContent = `${msg} ${fill(T.live.cash, { amount: eur(s.cash) })}` + (s.cash < SEUIL ? T.live.below : '');
     stats();
     s.i++;
     busy = true;
@@ -197,18 +207,16 @@
     const hadFocus = tx.contains(document.activeElement);
     tickEls.forEach((t) => t.classList.remove('cur'));
     const checks: [boolean, string][] = [
-      [s.minCash >= SEUIL, `Caisse toujours au-dessus du seuil (point bas ${eur(s.minCash)})`],
-      [s.spent <= BUDGET, `Dépenses dans le budget (${nf.format(Math.round(s.spent / BUDGET * 100))} % consommé)`],
-      [s.urgentDeferred === 0, s.urgentDeferred ? `${s.urgentDeferred} dépense urgente reportée avec pénalité` : 'Aucune dépense urgente reportée'],
+      [s.minCash >= SEUIL, fill(T.checks.cash, { amount: eur(s.minCash) })],
+      [s.spent <= BUDGET, fill(T.checks.budget, { pct: pctOf(s.spent / BUDGET * 100) })],
+      [s.urgentDeferred === 0, s.urgentDeferred ? fill(T.checks.urgentKo, { n: s.urgentDeferred }) : T.checks.urgentOk],
     ];
     const score = checks.filter((c) => c[0]).length;
-    byId('mailVerdict').textContent = score === 3 ? 'Mois maîtrisé. C’est exactement ce qu’Ahla aide à voir chaque matin.'
-      : score === 2 ? 'Presque : un point à surveiller avant le mois prochain.'
-      : 'Le mois a dérapé. Rejouez pour trouver le bon arbitrage.';
+    byId('mailVerdict').textContent = score === 3 ? T.verdicts[3] : score === 2 ? T.verdicts[2] : T.verdicts.low;
     byId('mailChecks').innerHTML = checks.map(([ok, t]) => `<li class="${ok ? 'ok' : 'ko'}">${ok ? ICON_OK : ICON_KO}<span>${t}</span></li>`).join('');
     byId('mailFigs').innerHTML = [
-      ['Caisse finale', eur(s.cash)], ['Dépenses payées', eur(s.spent)],
-      ['Reporté au mois prochain', eur(s.deferred)], ['Score', score + ' / 3'],
+      [T.figs.cash, eur(s.cash)], [T.figs.spent, eur(s.spent)],
+      [T.figs.deferred, eur(s.deferred)], [T.figs.score, fill(T.figs.scoreValue, { n: score })],
     ].map(([a, b]) => `<div><dt>${a}</dt><dd class="num">${b}</dd></div>`).join('');
     tx.hidden = true; mail.hidden = false;
     if (hadFocus) replay.focus({ preventScroll: true });

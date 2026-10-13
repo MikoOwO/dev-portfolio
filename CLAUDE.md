@@ -1,6 +1,6 @@
 # Portfolio de Mélik Zaanouni
 
-Site portfolio d'un développeur full-stack (MSc Data Science, EPFL). Langue du site : français.
+Site portfolio d'un développeur full-stack (MSc Data Science, EPFL). Bilingue : français sur `/` (langue par défaut), anglais sur `/en/`, sélecteur FR/EN dans l'en-tête.
 Point de départ : `prototype/index.html`, un prototype autonome (CSS et JS inline, images en data URI, three.js r128 chargé depuis cdnjs), conservé comme référence visuelle.
 Les captures d'écran existent aussi en fichiers dans `public/images/`.
 La migration vers Astro est faite : le rendu du build a été comparé pixel par pixel au prototype (voir `src/scripts/three-compat.ts` pour l'éclairage).
@@ -24,7 +24,8 @@ Transformer le prototype en projet Astro statique, maintenable, déployé sur Ve
 - Responsive jusqu'à 360 px de large. Les scènes 3D se mettent en pause hors écran.
 
 ## Conventions techniques
-- Astro + TypeScript. Un composant par section dans `src/components/`. Les scènes three.js dans `src/scripts/` et chargées côté client uniquement.
+- Astro + TypeScript. Un composant par section dans `src/components/`, qui reçoit `lang` en prop.
+- Tous les textes sont dans `src/i18n/fr.ts` et `src/i18n/en.ts` (même structure, typée depuis fr.ts) : toute modification de texte se fait dans les deux. Les textes utilisés par les scripts client passent par un attribut `data-strings` (JSON). Les scènes three.js dans `src/scripts/` et chargées côté client uniquement.
 - three.js installé via npm (version récente). Attention : depuis r155 l'éclairage est physiquement correct, il faut réajuster les intensités des lumières pour retrouver le rendu du prototype.
 - Images dans `public/images/` (WebP), avec width/height et loading="lazy" sous la ligne de flottaison.
 - Avant chaque commit : `npm run build` doit passer.

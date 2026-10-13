@@ -1,22 +1,25 @@
 ---
 import '../styles/global.css';
+import { languages, useTranslations, type Lang } from '../i18n';
 
 interface Props {
-  title: string;
-  description: string;
+  lang: Lang;
 }
 
-const { title, description } = Astro.props;
+const { lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 <!doctype html>
-<html lang="fr">
+<html lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#050E1F" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
+    <title>{t.meta.title}</title>
+    <meta name="description" content={t.meta.description} />
+    {Object.entries(languages).map(([code, l]) => <link rel="alternate" hreflang={code} href={l.path} />)}
+    <link rel="alternate" hreflang="x-default" href={languages.fr.path} />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -28,7 +31,7 @@ const { title, description } = Astro.props;
     />
   </head>
   <body>
-    <a class="skip" href="#main">Aller au contenu</a>
+    <a class="skip" href="#main">{t.meta.skip}</a>
     <slot />
     <script>
       import { initReveal } from '../scripts/reveal';

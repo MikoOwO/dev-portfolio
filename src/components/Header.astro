@@ -1,18 +1,29 @@
 ---
+import { languages, useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang).header;
+
 const links = [
-  { href: '#projets', label: 'Projets' },
-  { href: '#parcours', label: 'Parcours' },
-  { href: '#contact', label: 'Contact' },
+  { href: '#projets', label: t.nav.projects },
+  { href: '#parcours', label: t.nav.background },
+  { href: '#contact', label: t.nav.contact },
 ];
 ---
 
 <header class="top" id="top">
   <div class="wrap top-inner">
-    <a class="brand" href="#main" aria-label="Mélik Zaanouni, retour en haut">
+    <a class="brand" href="#main" aria-label={t.brandLabel}>
       <span class="brand-mark" aria-hidden="true">MZ</span><span>Mélik Zaanouni</span>
     </a>
-    <nav class="nav" aria-label="Navigation principale">
+    <nav class="nav" aria-label={t.navLabel}>
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
+    </nav>
+    <nav class="lang-switch" aria-label={t.langLabel}>
+      {Object.entries(languages).map(([code, l]) => (
+        <a href={l.path} hreflang={code} lang={code} title={l.name} aria-current={code === lang ? 'page' : undefined}>{l.label}</a>
+      ))}
     </nav>
   </div>
 </header>
@@ -32,6 +43,11 @@ const links = [
   .nav a{font-family:var(--display); font-weight:500; font-size:16px; text-decoration:none; color:var(--ink-soft); padding:10px 14px; border-radius:999px; transition:color .2s ease, background-color .2s ease}
   .nav a:hover{color:var(--ink); background:var(--line-soft)}
   @media (max-width:760px){ .nav{display:none} }
+  /* choix de la langue : toujours visible, y compris sur mobile */
+  .lang-switch{display:flex; gap:2px; padding:3px; border:1px solid var(--line); border-radius:999px}
+  .lang-switch a{font-family:var(--display); font-weight:600; font-size:14px; letter-spacing:.01em; text-decoration:none; color:var(--ink-soft); min-width:44px; min-height:36px; display:grid; place-items:center; padding:0 10px; border-radius:999px; transition:color .2s ease, background-color .2s ease}
+  .lang-switch a:hover{color:var(--ink); background:var(--line-soft)}
+  .lang-switch a[aria-current="page"]{background:var(--ink); color:var(--bg-deep)}
 </style>
 
 <script>

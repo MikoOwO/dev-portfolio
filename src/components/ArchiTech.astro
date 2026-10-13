@@ -1,37 +1,40 @@
 ---
 import CodeIcon from './icons/CodeIcon.astro';
 import ExternalIcon from './icons/ExternalIcon.astro';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const dict = useTranslations(Astro.props.lang);
+const t = dict.architech;
 ---
 
 <article class="project" aria-labelledby="arch-title">
   <div class="wrap project-grid">
     <div class="project-text">
       <div class="p-meta">
-        <span class="tag">Stage IA générative, Talan</span>
-        <span class="tag">Projet d’équipe</span>
-        <span class="tag">Juil. – août 2026</span>
+        <span class="tag">{t.tags.context}</span>
+        <span class="tag">{t.tags.team}</span>
+        <span class="tag">{t.tags.period}</span>
       </div>
       <h3 id="arch-title">ArchiTech</h3>
-      <p class="p-sub">L’IA qui passe d’un programme architectural à un bâtiment posé sur sa carte.</p>
+      <p class="p-sub">{t.sub}</p>
       <ul class="p-list">
-        <li>Plateforme qui automatise la <strong>faisabilité réglementaire</strong>, les plans 2D/3D et l’estimation des coûts.</li>
-        <li>J’ai débloqué la <strong>génération de plans 3D</strong> : outils d’agent trouvés dans le logiciel open source Pascal, faisabilité prouvée avec Claude Code, puis intégration.</li>
-        <li>Ajout de la <strong>génération de façades 3D</strong> à partir d’images (NanoBanana, API Meshy) et placement des bâtiments sur une carte 3D, dans leur environnement réel.</li>
+        {t.list.map((item) => <li set:html={item} />)}
       </ul>
       <div class="prize">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"></circle><path d="M8.5 14 7 22l5-3 5 3-1.5-8"></path></svg>
-        <p><strong>1er prix, Talan Summer Camp 2026</strong>Face à 10 équipes d’étudiants de l’EPFL, HEC et Centrale. J’ai porté le pitch final.</p>
+        <p set:html={t.prize} />
       </div>
       <div class="p-links">
-        <a class="btn primary" href="https://drive.google.com/file/d/1kQWvltnXMjHkuOnWUwb0sI_5bZWr_gUe/view" target="_blank" rel="noopener"><ExternalIcon />Voir la démo</a>
-        <a class="btn" href="https://github.com/kartouchaTALAN/vibetitect/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
+        <a class="btn primary" href="https://drive.google.com/file/d/1kQWvltnXMjHkuOnWUwb0sI_5bZWr_gUe/view" target="_blank" rel="noopener"><ExternalIcon />{t.demo}</a>
+        <a class="btn" href="https://github.com/kartouchaTALAN/vibetitect/tree/main" target="_blank" rel="noopener"><CodeIcon />{dict.projects.sourceCode}</a>
       </div>
     </div>
     <div class="plan reveal">
-      <canvas id="planCanvas" role="img" aria-label="Plan d’un logement qui s’élève en volume 3D, inspiré du pipeline ArchiTech."></canvas>
+      <canvas id="planCanvas" role="img" aria-label={t.canvasLabel}></canvas>
       <div class="plan-ui">
-        <button class="btn" type="button" id="planBtn" aria-pressed="false">Passer en 3D</button>
-        <span class="plan-note" id="planNote">Faites glisser pour tourner</span>
+        <button class="btn" type="button" id="planBtn" aria-pressed="false" data-strings={JSON.stringify(t.plan)}>{t.plan.to3d}</button>
+        <span class="plan-note" id="planNote">{t.plan.drag}</span>
       </div>
     </div>
   </div>
@@ -49,12 +52,15 @@ import ExternalIcon from './icons/ExternalIcon.astro';
   .prize{display:flex; gap:16px; align-items:center; margin-top:30px; padding:18px 20px; border-radius:16px; border:1px solid color-mix(in srgb, var(--accent) 45%, transparent); background:color-mix(in srgb, var(--accent) 8%, transparent)}
   .prize svg{width:34px; height:34px; color:var(--accent); flex:none}
   .prize p{font-size:16px; color:var(--ink-soft)}
-  .prize strong{display:block; font-family:var(--display); color:var(--ink); font-size:18px}
+  /* le texte du prix vient du dictionnaire (set:html) : son <strong> n'est pas dans le gabarit */
+  .prize :global(strong){display:block; font-family:var(--display); color:var(--ink); font-size:18px}
 </style>
 
 <script>
   import { byId } from '../scripts/motion';
-  import { initPlan } from '../scripts/plan';
+  import { initPlan, type PlanStrings } from '../scripts/plan';
+  import { readStrings } from '../scripts/i18n';
 
-  initPlan(byId<HTMLCanvasElement>('planCanvas'), byId<HTMLButtonElement>('planBtn'), byId('planNote'));
+  const btn = byId<HTMLButtonElement>('planBtn');
+  initPlan(byId<HTMLCanvasElement>('planCanvas'), btn, byId('planNote'), readStrings<PlanStrings>(btn));
 </script>

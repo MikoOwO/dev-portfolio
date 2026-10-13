@@ -2,32 +2,18 @@
 import CodeIcon from './icons/CodeIcon.astro';
 import ExternalIcon from './icons/ExternalIcon.astro';
 import Traceability from './Traceability.astro';
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const dict = useTranslations(lang);
+const t = dict.capx;
 
 const views = [
-  {
-    id: 'v-home', tab: 'Le site', url: 'capxvalue',
-    src: '/images/capxvalue-accueil.webp', height: 723,
-    alt: 'Page d’accueil de CapXValue : « Le business plan dont chaque chiffre se justifie ».',
-    cap: 'La promesse : un business plan sur sept ans dont chaque montant se justifie.',
-  },
-  {
-    id: 'v-hist', tab: 'Importer', url: 'capxvalue / données historiques',
-    src: '/images/capxvalue-donnees-historiques.webp', height: 885,
-    alt: 'Étape Données historiques : dépôt des PDF d’états financiers et tableau des montants lus, vérifiables un par un.',
-    cap: 'On dépose les PDF, l’OCR lit les montants, l’utilisateur vérifie ceux dont la lecture est incertaine.',
-  },
-  {
-    id: 'v-hyp', tab: 'Hypothèses', url: 'capxvalue / hypothèses',
-    src: '/images/capxvalue-hypotheses.webp', height: 882,
-    alt: 'Étape Hypothèses : les six hypothèses principales par exercice projeté, avec la moyenne historique comme valeur par défaut.',
-    cap: 'Chaque saisie recalcule le modèle. Une hypothèse vide vaut la moyenne historique du projet.',
-  },
-  {
-    id: 'v-model', tab: 'Modèle', url: 'capxvalue / modèle financier',
-    src: '/images/capxvalue-modele-financier.webp', height: 883,
-    alt: 'Étape Modèle financier : compte de résultat de 2022 à 2032, exercices historiques et projetés, exportable en Excel.',
-    cap: 'Compte de résultat, bilan et trésorerie de 2022 à 2032, exportables en Excel.',
-  },
+  { id: 'v-home', src: '/images/capxvalue-accueil.webp', height: 723, ...t.views.home },
+  { id: 'v-hist', src: '/images/capxvalue-donnees-historiques.webp', height: 885, ...t.views.hist },
+  { id: 'v-hyp', src: '/images/capxvalue-hypotheses.webp', height: 882, ...t.views.hyp },
+  { id: 'v-model', src: '/images/capxvalue-modele-financier.webp', height: 883, ...t.views.model },
 ];
 ---
 
@@ -35,20 +21,18 @@ const views = [
   <div class="wrap project-grid has-steps">
     <div class="project-text">
       <div class="p-meta">
-        <span class="tag live">En production</span>
-        <span class="tag">Full-stack</span>
-        <span class="tag">2026 – aujourd’hui</span>
+        <span class="tag live">{t.tags.live}</span>
+        <span class="tag">{t.tags.role}</span>
+        <span class="tag">{t.tags.period}</span>
       </div>
       <h3 id="capx-title">CapXValue</h3>
-      <p class="p-sub">Un business plan sur sept ans dont chaque montant renvoie à sa source.</p>
+      <p class="p-sub">{t.sub}</p>
       <ul class="p-list">
-        <li>Plateforme SaaS fintech de <strong>valorisation d’entreprise</strong> et de préparation à la levée de fonds.</li>
-        <li><strong>Ingestion OCR</strong> des états financiers certifiés, puis projection du compte de résultat, du bilan et de la trésorerie 2026–2032.</li>
-        <li>Moteur de calcul financier en <strong>Python pur</strong>, séparé de la couche web et verrouillé par des tests automatisés.</li>
+        {t.list.map((item) => <li set:html={item} />)}
       </ul>
       <div class="p-links">
-        <a class="btn primary" href="https://capxvalue.com" target="_blank" rel="noopener"><ExternalIcon />Ouvrir capxvalue.com</a>
-        <a class="btn" href="https://github.com/MikoOwO/capxvalue/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
+        <a class="btn primary" href="https://capxvalue.com" target="_blank" rel="noopener"><ExternalIcon />{t.open}</a>
+        <a class="btn" href="https://github.com/MikoOwO/capxvalue/tree/main" target="_blank" rel="noopener"><CodeIcon />{dict.projects.sourceCode}</a>
       </div>
     </div>
     <div class="steps-track" id="capxTrack" style={`--steps:${views.length}`}>
@@ -61,7 +45,7 @@ const views = [
             ))}
           </div>
         </div>
-        <div class="view-tabs" role="tablist" aria-label="Écrans de CapXValue">
+        <div class="view-tabs" role="tablist" aria-label={t.tabsLabel}>
           {views.map((v, i) => (
             <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={v.id} data-view={v.id} data-url={v.url} tabindex={i === 0 ? undefined : -1} data-cap={v.cap}>{v.tab}</button>
           ))}
@@ -71,7 +55,7 @@ const views = [
     </div>
   </div>
 
-  <Traceability />
+  <Traceability lang={lang} />
 </article>
 
 <style>

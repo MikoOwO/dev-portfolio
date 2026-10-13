@@ -1,58 +1,18 @@
 ---
-interface Step {
-  year: string;
-  title: string;
-  text: string;
-  place?: string;
-  highlight?: boolean;
-}
+import { useTranslations, type Lang } from '../i18n';
 
-const steps: Step[] = [
-  {
-    year: '2026', highlight: true,
-    title: 'MSc Data Science à l’EPFL, et CapXValue',
-    text: 'Master en cours depuis septembre, en parallèle du développement full-stack de CapXValue. Bachelor en Systèmes de communication obtenu en juin (moyenne 4,93/6).',
-    place: 'EPFL, Lausanne',
-  },
-  {
-    year: '2026', highlight: true,
-    title: 'Stage IA générative chez Talan, 1er prix',
-    text: 'Deux mois sur ArchiTech, conclus par le premier prix du Summer Camp.',
-    place: 'Talan, juillet – août',
-  },
-  {
-    year: '2025',
-    title: 'Année d’échange et Ahla Cashflow',
-    text: 'Troisième année de bachelor à l’UPV, en espagnol. Conception et mise en production d’Ahla Cashflow en solo.',
-    place: 'Universitat Politècnica de València',
-  },
-  {
-    year: '2025',
-    title: 'Collaborateur chez Celestial Wave Design',
-    text: 'Agence web et mobile pour le marché suisse. Statut de fournisseur agréé obtenu auprès d’un laboratoire de photonique de l’EPFL.',
-  },
-  {
-    year: '2024',
-    title: 'Enseigner le code',
-    text: 'Assistant à l’EPFL pour des étudiants hors informatique, cours de programmation pour 30 filles de 9 à 11 ans, atelier sur les deepfakes à l’École internationale de Genève.',
-  },
-  {
-    year: '2023',
-    title: 'Bac mention très bien, premiers produits vendus',
-    text: 'Baccalauréat français, 17,92/20, section européenne. Plus de 150 maillots de football personnalisés produits et vendus, et le best-seller de la marque Cailloux Athletics (plus de 200 pièces).',
-    place: 'Lycée Gustave Flaubert, Tunis',
-  },
-];
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).background;
 ---
 
 <section id="parcours" aria-labelledby="parcours-title">
   <div class="wrap sec-head">
-    <h2 id="parcours-title">Tunis, Lausanne, Valence, et retour.</h2>
-    <p>Des études en systèmes de communication puis en data science, et à chaque étape un projet concret mené en parallèle des cours.</p>
+    <h2 id="parcours-title">{t.title}</h2>
+    <p>{t.intro}</p>
   </div>
   <div class="wrap">
     <ol class="timeline">
-      {steps.map((s) => (
+      {t.steps.map((s) => (
         <li class:list={[{ hl: s.highlight }]}>
           <span class="t-year num">{s.year}</span>
           <div class="t-body">

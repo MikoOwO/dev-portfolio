@@ -30,6 +30,8 @@ export interface CashRules {
   seuil: number;
   budget: number;
   unit: number;
+  /** étiquettes déjà traduites et formatées */
+  labels: { cash: string; jar: string; seuil: string; budget: string };
 }
 
 export interface CashScene {
@@ -47,7 +49,7 @@ interface Tween {
   done?: () => void;
 }
 
-export function createCashScene(canvas: HTMLCanvasElement, { seuil, budget, unit }: CashRules): CashScene {
+export function createCashScene(canvas: HTMLCanvasElement, { seuil, budget, unit, labels: names }: CashRules): CashScene {
   const renderer = createRenderer({ canvas, antialias: true, alpha: true });
   const sc = new Scene();
   const camera = new PerspectiveCamera(38, 1, .1, 100);
@@ -83,8 +85,6 @@ export function createCashScene(canvas: HTMLCanvasElement, { seuil, budget, unit
   const lid = new LineSegments(new EdgesGeometry(new BoxGeometry(2.5, .001, 2.5)), new LineBasicMaterial({ color: cssColor('--ink') }));
   lid.position.set(JX, jh, 0); sc.add(lid);
 
-  // milliers séparés par une espace simple, comme sur les étiquettes du prototype
-  const amount = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   function label(text: string, color: string, w = 3.2): Sprite {
     const c = document.createElement('canvas'); c.width = 512; c.height = 128;
     const g = c.getContext('2d');
@@ -97,10 +97,10 @@ export function createCashScene(canvas: HTMLCanvasElement, { seuil, budget, unit
   }
   function labels(): void {
     const L = [
-      label('Caisse', cssVar('--ink'), 4),
-      label('Budget du mois', cssVar('--ink'), 4.4),
-      label(`Seuil ${amount(seuil)} €`, cssVar('--warn'), 3.6),
-      label(`Budget ${amount(budget)} €`, cssVar('--ink-soft'), 3.6),
+      label(names.cash, cssVar('--ink'), 4),
+      label(names.jar, cssVar('--ink'), 4.4),
+      label(names.seuil, cssVar('--warn'), 3.6),
+      label(names.budget, cssVar('--ink-soft'), 3.6),
     ];
     L[0].position.set(CX, -.8, 1.5); L[1].position.set(JX, -.8, 1.5);
     L[2].position.set(CX - 3.5, sy, 0); L[3].position.set(JX + 3, jh, 0);

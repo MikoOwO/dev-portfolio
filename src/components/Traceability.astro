@@ -3,42 +3,43 @@
  * « D'où vient ce chiffre ? » : graphe de traçabilité du résultat net 2028
  * de CapXValue jusqu'à la note 6.1 du rapport annuel 2024.
  */
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).trace;
+
 type Kind = 'real' | 'hyp' | 'calc';
-const kindLabel: Record<Kind, string> = { real: 'Réel', hyp: 'Hypothèse', calc: 'Calcul' };
+type NodeId = keyof typeof t.nodes;
 
-const nodes: { id: string; row: 'top' | 'bottom'; col: number; kind: Kind; title: string; value: string; num?: boolean }[] = [
-  { id: 'src', row: 'top', col: 1, kind: 'real', title: 'Rapport annuel 2024', value: 'Note 6.1, page 3' },
-  { id: 'g', row: 'top', col: 2, kind: 'hyp', title: 'Croissance', value: '8,5\u00a0% par an' },
-  { id: 'cost', row: 'top', col: 3, kind: 'hyp', title: 'Coûts d’exploitation', value: '83,3\u00a0% du CA' },
-  { id: 'tax', row: 'top', col: 4, kind: 'hyp', title: 'Taux d’impôt', value: '20\u00a0%' },
-  { id: 'ca25', row: 'bottom', col: 1, kind: 'real', title: 'CA 2025', value: '46\u00a0250', num: true },
-  { id: 'ca28', row: 'bottom', col: 2, kind: 'calc', title: 'CA 2028', value: '59\u00a0075', num: true },
-  { id: 'ebitda', row: 'bottom', col: 3, kind: 'calc', title: 'EBITDA 2028', value: '9\u00a0866', num: true },
-  { id: 'rn', row: 'bottom', col: 4, kind: 'calc', title: 'Résultat net 2028', value: '5\u00a0306', num: true },
+const nodes: { id: NodeId; row: 'top' | 'bottom'; col: number; kind: Kind; num?: boolean }[] = [
+  { id: 'src', row: 'top', col: 1, kind: 'real' },
+  { id: 'g', row: 'top', col: 2, kind: 'hyp' },
+  { id: 'cost', row: 'top', col: 3, kind: 'hyp' },
+  { id: 'tax', row: 'top', col: 4, kind: 'hyp' },
+  { id: 'ca25', row: 'bottom', col: 1, kind: 'real', num: true },
+  { id: 'ca28', row: 'bottom', col: 2, kind: 'calc', num: true },
+  { id: 'ebitda', row: 'bottom', col: 3, kind: 'calc', num: true },
+  { id: 'rn', row: 'bottom', col: 4, kind: 'calc', num: true },
 ];
 
-const picks = [
-  { target: 'rn', label: 'Résultat net 2028', value: '5\u00a0306' },
-  { target: 'ebitda', label: 'EBITDA 2028', value: '9\u00a0866' },
-  { target: 'ca28', label: 'Chiffre d’affaires 2028', value: '59\u00a0075' },
-];
+const picks = (['rn', 'ebitda', 'ca28'] as const).map((id) => ({ target: id, label: t.picks[id], value: t.nodes[id].value }));
 ---
 
 <div class="wrap trace-row">
   <div class="trace-intro">
-    <h4>D’où vient ce chiffre&nbsp;?</h4>
-    <p>Choisissez un résultat : le moteur remonte son calcul, hypothèse par hypothèse, jusqu’à la ligne du rapport annuel.</p>
-    <div class="trace-picks" role="group" aria-label="Résultat à retracer">
+    <h4>{t.title}</h4>
+    <p>{t.intro}</p>
+    <div class="trace-picks" role="group" aria-label={t.picksLabel}>
       {picks.map((p, i) => (
         <button type="button" class="pick" data-target={p.target} aria-pressed={i === 0 ? 'true' : 'false'}><span>{p.label}</span><span class="num">{p.value}</span></button>
       ))}
     </div>
-    <p class="trace-formula" id="traceFormula" aria-live="polite">Résultat net = EBIT + résultat financier − impôt. Huit éléments, dont trois hypothèses et une note du rapport annuel.</p>
+    <p class="trace-formula" id="traceFormula" aria-live="polite" data-strings={JSON.stringify(t.formulas)}>{t.formulas.rn}</p>
   </div>
   <div class="graph-wrap" id="graphWrap">
     <div class="graph" id="graph" aria-hidden="true">
       {nodes.map((n) => (
-        <div class={`node ${n.row}`} data-id={n.id} style={`--c:${n.col}`}><b class={`k-${n.kind}`}>{kindLabel[n.kind]}</b><strong>{n.title}</strong><span class:list={[{ num: n.num }]}>{n.value}</span></div>
+        <div class={`node ${n.row}`} data-id={n.id} style={`--c:${n.col}`}><b class={`k-${n.kind}`}>{t.kinds[n.kind]}</b><strong>{t.nodes[n.id].title}</strong><span class:list={[{ num: n.num }]}>{t.nodes[n.id].value}</span></div>
       ))}
     </div>
   </div>
@@ -89,16 +90,12 @@ const picks = [
 
 <script>
   import { byId, reducedMotion as reduced } from '../scripts/motion';
+  import { readStrings } from '../scripts/i18n';
 
   type Target = 'rn' | 'ebitda' | 'ca28';
   const deps: Record<string, string[]> = { rn: ['ebitda', 'tax'], ebitda: ['ca28', 'cost'], ca28: ['ca25', 'g'], ca25: ['src'] };
-  const formulas: Record<Target, string> = {
-    rn: 'Résultat net = EBIT + résultat financier − impôt. Huit éléments, dont trois hypothèses et une note du rapport annuel.',
-    ebitda: 'EBITDA = chiffre d’affaires × (1 − coûts d’exploitation). Six éléments, dont deux hypothèses.',
-    ca28: 'CA 2028 = CA 2025 × (1 + 8,5 %)³. Quatre éléments, dont une hypothèse et une note du rapport annuel.',
-  };
-
   const graph = byId('graph'), graphWrap = byId('graphWrap'), formula = byId('traceFormula');
+  const formulas = readStrings<Record<Target, string>>(formula);
   const nodes = new Map([...graph.querySelectorAll<HTMLElement>('.node')].map((n) => [n.dataset.id ?? '', n]));
   const picks = [...document.querySelectorAll<HTMLButtonElement>('.trace-picks .pick')];
   let timers: number[] = [];

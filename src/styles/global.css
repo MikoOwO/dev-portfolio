@@ -47,6 +47,8 @@ a{color:inherit}
 h1,h2,h3{font-family:var(--display); font-weight:700; line-height:1.02; margin:0; text-wrap:balance; letter-spacing:-.025em}
 p{margin:0; text-wrap:pretty}
 .num{font-variant-numeric:tabular-nums lining-nums}
+/* en anglais, la virgule des milliers prend une chasse fixe en chiffres tabulaires (« 28 , 000 ») */
+:lang(en) .num{font-variant-numeric:lining-nums}
 .sr{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap}
 
 /* ---------- Boutons ---------- */
