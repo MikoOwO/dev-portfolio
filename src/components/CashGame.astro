@@ -1,7 +1,7 @@
 ---
 /*
- * « Tenez la caisse d'octobre » : douze décisions de trésorerie,
- * seuil de caisse 15 000 DT, budget 70 000 DT, 1 bloc = 2 000 DT.
+ * « Tenez la caisse d'octobre » : cinq décisions de trésorerie,
+ * seuil de caisse 15 000 €, budget 45 000 €, 1 bloc = 2 000 €.
  */
 ---
 
@@ -9,7 +9,7 @@
   <div class="game-stage">
     <canvas id="cashCanvas" role="img" aria-label="Deux colonnes en 3D : à gauche la caisse avec son seuil de sécurité, à droite le budget dépenses du mois qui se remplit à chaque paiement."></canvas>
     <div class="game-legend" aria-hidden="true">
-      <span><i class="sw-cash"></i>Caisse, 1 bloc = 2&nbsp;000&nbsp;DT</span>
+      <span><i class="sw-cash"></i>Caisse, 1 bloc = 2&nbsp;000&nbsp;€</span>
       <span><i class="sw-jar"></i>Budget dépenses du mois</span>
       <span><i class="sw-warn"></i>Seuil ou dépassement</span>
     </div>
@@ -18,7 +18,7 @@
   <div class="game-panel">
     <div>
       <h4>Tenez la caisse d’octobre.</h4>
-      <p class="game-rules">Douze transactions d’une résidence étudiante. Payez ou reportez chaque dépense : la caisse doit rester au-dessus de 15&nbsp;000&nbsp;DT et les dépenses sous le budget de 70&nbsp;000&nbsp;DT.</p>
+      <p class="game-rules">Cinq transactions d’une résidence étudiante. Payez ou reportez chaque dépense : la caisse doit rester au-dessus de 15&nbsp;000&nbsp;€ et les dépenses sous le budget de 45&nbsp;000&nbsp;€.</p>
     </div>
     <div class="ticks" id="ticks" aria-hidden="true"></div>
     <div class="tx" id="tx">
@@ -60,7 +60,7 @@
   .game-panel{display:flex; flex-direction:column; gap:20px; min-width:0}
   .game-panel h4{font-family:var(--display); font-weight:700; font-size:clamp(26px, 2.4vw, 34px); letter-spacing:-.03em; line-height:1.1; margin:0}
   .game-rules{color:var(--ink-soft); font-size:16px; margin-top:10px}
-  .ticks{display:grid; grid-template-columns:repeat(12, 1fr); gap:4px}
+  .ticks{display:grid; grid-auto-flow:column; grid-auto-columns:1fr; gap:4px}
   .ticks :global(i){height:5px; border-radius:3px; background:var(--line); transition:background-color .3s ease}
   .ticks :global(i.paid){background:var(--accent)} .ticks :global(i.deferred){background:var(--ink-faint)} .ticks :global(i.cur){background:var(--ink)}
   .tx, .mail-card{background:var(--ink); color:var(--bg-deep); border-radius:18px; padding:22px; font-family:var(--display)}
@@ -102,20 +102,18 @@
   type Kind = 'in' | 'must' | 'urgent' | 'opt';
   interface CashEvent { d: string; desc: string; cat: string; amt: number; k: Kind }
 
-  const START = 30000, SEUIL = 15000, BUDGET = 70000, UNIT = 2000;
+  /*
+   * Cinq décisions qui pèsent chacune sur un critère du bilan :
+   * payer la chaudière évite la pénalité, reporter le mobilier garde la caisse
+   * au-dessus du seuil et les dépenses dans le budget.
+   */
+  const START = 30000, SEUIL = 15000, BUDGET = 45000, UNIT = 2000;
   const EVENTS: CashEvent[] = [
     { d: '01/10', desc: 'Loyers résidents, bâtiment A', cat: 'Loyers & Hébergement', amt: 28000, k: 'in' },
     { d: '03/10', desc: 'Salaires du personnel', cat: 'Personnel', amt: 32000, k: 'must' },
     { d: '06/10', desc: 'Réparation de la chaudière', cat: 'Services extérieurs', amt: 6500, k: 'urgent' },
-    { d: '09/10', desc: 'Vente abonnements logiciels récurrents', cat: 'Ventes & Prestations', amt: 14200, k: 'in' },
-    { d: '10/10', desc: 'Fournitures de bureau & rames HP', cat: 'Achats & Fournisseurs', amt: 1850, k: 'opt' },
-    { d: '13/10', desc: 'Campagne réseaux sociaux de rentrée', cat: 'Marketing & Communication', amt: 9000, k: 'opt' },
-    { d: '15/10', desc: 'Facture d’électricité', cat: 'Frais généraux & Loyer', amt: 4800, k: 'must' },
+    { d: '10/10', desc: 'Nouveau mobilier pour la salle commune', cat: 'Achats & Fournisseurs', amt: 14000, k: 'opt' },
     { d: '17/10', desc: 'Loyers résidents, bâtiment B', cat: 'Loyers & Hébergement', amt: 22000, k: 'in' },
-    { d: '20/10', desc: 'Nettoyage des parties communes', cat: 'Nettoyage', amt: 5200, k: 'must' },
-    { d: '23/10', desc: 'Nouveau mobilier pour la salle commune', cat: 'Achats & Fournisseurs', amt: 14000, k: 'opt' },
-    { d: '27/10', desc: 'Maintenance de l’ascenseur', cat: 'Services extérieurs', amt: 7300, k: 'urgent' },
-    { d: '30/10', desc: 'Soirée d’intégration, billetterie', cat: 'Ventes & Prestations', amt: 6500, k: 'in' },
   ];
   const FLAGS: Record<Kind, string> = {
     in: 'Recette : encaissée dès réception.',
@@ -127,7 +125,7 @@
   const ICON_KO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>';
 
   const nf = new Intl.NumberFormat('fr-FR');
-  const dt = (n: number) => nf.format(Math.round(n)) + ' DT';
+  const eur = (n: number) => nf.format(Math.round(n)) + ' €';
 
   const ticks = byId('ticks'), tx = byId('tx'), mail = byId('mailCard'), live = byId('gLive');
   const pay = byId<HTMLButtonElement>('gPay'), defer = byId<HTMLButtonElement>('gDefer'), replay = byId<HTMLButtonElement>('gReplay');
@@ -155,10 +153,10 @@
   }
   function stats(): void {
     const c = byId('sCash'), b = byId('sBudget');
-    c.textContent = dt(s.cash); c.classList.toggle('warn', s.cash < SEUIL);
+    c.textContent = eur(s.cash); c.classList.toggle('warn', s.cash < SEUIL);
     const pct = s.spent / BUDGET * 100;
     b.textContent = nf.format(Math.round(pct)) + ' %'; b.classList.toggle('warn', pct > 100);
-    byId('sDefer').textContent = dt(s.deferred);
+    byId('sDefer').textContent = eur(s.deferred);
     scene?.state(s.cash < SEUIL);
   }
   function render(): void {
@@ -169,7 +167,7 @@
     byId('txCat').textContent = e.cat;
     byId('txDesc').textContent = e.desc;
     const amt = byId('txAmt');
-    amt.textContent = (e.k === 'in' ? '+' : '−') + dt(e.amt);
+    amt.textContent = (e.k === 'in' ? '+' : '−') + eur(e.amt);
     amt.className = 'tx-amt num ' + (e.k === 'in' ? 'in' : 'out');
     byId('txFlag').textContent = FLAGS[e.k];
     pay.textContent = e.k === 'in' ? 'Encaisser' : 'Payer';
@@ -181,15 +179,15 @@
     if (busy || s.i >= EVENTS.length) return;
     const e = EVENTS[s.i];
     let msg: string;
-    if (e.k === 'in') { s.cash += e.amt; scene?.income(s.cash); msg = `Encaissé ${dt(e.amt)}.`; tickEls[s.i].className = 'paid'; }
-    else if (doPay) { s.cash -= e.amt; s.spent += e.amt; scene?.pay(s.cash, s.spent); msg = `Payé ${dt(e.amt)}.`; tickEls[s.i].className = 'paid'; }
+    if (e.k === 'in') { s.cash += e.amt; scene?.income(s.cash); msg = `Encaissé ${eur(e.amt)}.`; tickEls[s.i].className = 'paid'; }
+    else if (doPay) { s.cash -= e.amt; s.spent += e.amt; scene?.pay(s.cash, s.spent); msg = `Payé ${eur(e.amt)}.`; tickEls[s.i].className = 'paid'; }
     else {
       const cost = e.k === 'urgent' ? e.amt * 1.3 : e.amt;
       s.deferred += cost; if (e.k === 'urgent') s.urgentDeferred++;
-      scene?.defer(); msg = `Reporté : ${dt(cost)} au mois prochain.`; tickEls[s.i].className = 'deferred';
+      scene?.defer(); msg = `Reporté : ${eur(cost)} au mois prochain.`; tickEls[s.i].className = 'deferred';
     }
     s.minCash = Math.min(s.minCash, s.cash);
-    live.textContent = `${msg} Caisse : ${dt(s.cash)}.` + (s.cash < SEUIL ? ' Sous le seuil de sécurité.' : '');
+    live.textContent = `${msg} Caisse : ${eur(s.cash)}.` + (s.cash < SEUIL ? ' Sous le seuil de sécurité.' : '');
     stats();
     s.i++;
     busy = true;
@@ -199,7 +197,7 @@
     const hadFocus = tx.contains(document.activeElement);
     tickEls.forEach((t) => t.classList.remove('cur'));
     const checks: [boolean, string][] = [
-      [s.minCash >= SEUIL, `Caisse toujours au-dessus du seuil (point bas ${dt(s.minCash)})`],
+      [s.minCash >= SEUIL, `Caisse toujours au-dessus du seuil (point bas ${eur(s.minCash)})`],
       [s.spent <= BUDGET, `Dépenses dans le budget (${nf.format(Math.round(s.spent / BUDGET * 100))} % consommé)`],
       [s.urgentDeferred === 0, s.urgentDeferred ? `${s.urgentDeferred} dépense urgente reportée avec pénalité` : 'Aucune dépense urgente reportée'],
     ];
@@ -209,8 +207,8 @@
       : 'Le mois a dérapé. Rejouez pour trouver le bon arbitrage.';
     byId('mailChecks').innerHTML = checks.map(([ok, t]) => `<li class="${ok ? 'ok' : 'ko'}">${ok ? ICON_OK : ICON_KO}<span>${t}</span></li>`).join('');
     byId('mailFigs').innerHTML = [
-      ['Caisse finale', dt(s.cash)], ['Dépenses payées', dt(s.spent)],
-      ['Reporté au mois prochain', dt(s.deferred)], ['Score', score + ' / 3'],
+      ['Caisse finale', eur(s.cash)], ['Dépenses payées', eur(s.spent)],
+      ['Reporté au mois prochain', eur(s.deferred)], ['Score', score + ' / 3'],
     ].map(([a, b]) => `<div><dt>${a}</dt><dd class="num">${b}</dd></div>`).join('');
     tx.hidden = true; mail.hidden = false;
     if (hadFocus) replay.focus({ preventScroll: true });

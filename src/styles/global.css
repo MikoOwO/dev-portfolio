@@ -91,6 +91,18 @@ section{position:relative; z-index:1}
 .p-links{display:flex; flex-wrap:wrap; gap:12px; margin-top:32px}
 .p-links .btn{min-height:46px; font-size:15px; padding:0 18px; border-radius:12px}
 
+/* ---------- Écrans qui changent au défilement (CapXValue, Ahla) ----------
+   Le rail (.steps-track) s'allonge de 60svh par écran supplémentaire ; le média
+   (.steps-sticky) reste épinglé, centré sous l'en-tête, pendant ce défilement. */
+.steps-track{display:flow-root}
+.steps-track::after{content:""; display:block; height:calc((var(--steps, 1) - 1) * 60svh)}
+.steps-sticky{position:sticky; top:max(88px, calc(50svh + 36px - var(--sticky-h, 0px) / 2))}
+.steps-sticky .deck-caption{min-height:3.2em}
+@media (min-width:961px){
+  .project-grid.has-steps{align-items:start}
+  .project-grid.has-steps > .project-text{position:sticky; top:max(88px, calc(50svh + 36px - var(--sticky-h, 0px) / 2))}
+}
+
 /* légendes et notes partagées par les démos */
 .deck-caption{margin-top:14px; font-size:16px; color:var(--ink-faint); min-height:1.6em}
 .plan-note{font-family:var(--display); font-size:14px; color:var(--ink-faint)}

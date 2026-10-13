@@ -53,9 +53,9 @@ const picks = [
   .pick:hover{border-color:var(--ink-faint)}
   .pick[aria-pressed="true"]{background:var(--ink); color:var(--bg-deep); border-color:var(--ink)}
   .trace-formula{margin-top:18px; font-size:16px; color:var(--ink-faint); min-height:3.2em}
-  .graph-wrap{perspective:1400px; overflow-x:auto; overflow-y:visible; padding:40px 8px 48px; overscroll-behavior-x:contain}
+  .graph-wrap{perspective:1400px; padding:40px 8px 48px}
   .graph{
-    display:grid; grid-template-columns:repeat(4, minmax(130px, 1fr)); grid-template-rows:auto auto; gap:60px 40px; min-width:620px;
+    display:grid; grid-template-columns:repeat(4, minmax(0, 1fr)); grid-template-rows:auto auto; gap:60px 40px;
     transform:rotateX(var(--gx, 20deg)) rotateY(var(--gy, -12deg)) rotateZ(-3deg); transform-style:preserve-3d; transition:transform .7s var(--ease-out);
   }
   .node{
@@ -77,6 +77,14 @@ const picks = [
   .node.bottom:not([data-id="rn"])::after{content:""; position:absolute; left:100%; top:50%; width:40px; border-top:2px dashed var(--line); transition:border-color .4s ease}
   .node.lit::after{border-color:var(--accent) !important}
   @media (max-width:960px){ .trace-row{grid-template-columns:1fr} .graph{--gx:8deg; --gy:0deg} }
+  /* écran étroit : le graphe pivote d'un quart de tour (calculs à droite, sources à gauche) pour tenir sans défilement */
+  @media (max-width:760px){
+    .graph{grid-template-columns:repeat(2, minmax(0, 1fr)); grid-template-rows:repeat(4, auto); gap:36px 32px}
+    .node.top{grid-column:1; grid-row:var(--c)}
+    .node.bottom{grid-column:2; grid-row:var(--c)}
+    .node.top::after{left:100%; top:50%; height:0; width:32px; border-left:0; border-top:2px dashed var(--line)}
+    .node.bottom:not([data-id="rn"])::after{left:50%; top:100%; width:0; height:36px; border-top:0; border-left:2px dashed var(--line)}
+  }
 </style>
 
 <script>

@@ -1,5 +1,6 @@
 ---
 import CodeIcon from './icons/CodeIcon.astro';
+import ExternalIcon from './icons/ExternalIcon.astro';
 import CashGame from './CashGame.astro';
 
 const cards = [
@@ -25,7 +26,7 @@ const cards = [
 ---
 
 <article class="project flip" aria-labelledby="ahla-title">
-  <div class="wrap project-grid">
+  <div class="wrap project-grid has-steps">
     <div class="project-text">
       <div class="p-meta">
         <span class="tag live">En production</span>
@@ -41,22 +42,24 @@ const cards = [
         <li>Assistant IA agentique (<strong>Mistral</strong>) et contrôle d’accès multi-niveaux.</li>
       </ul>
       <div class="p-links">
-        <a class="btn primary" href="https://ahlapp.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"></path></svg>Ouvrir ahlapp.com</a>
+        <a class="btn primary" href="https://ahlapp.com" target="_blank" rel="noopener"><ExternalIcon />Ouvrir ahlapp.com</a>
         <a class="btn" href="https://github.com/MikoOwO/ahla-cashflow-hub/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
       </div>
     </div>
-    <div class="deck reveal">
-      <div class="deck-cards" id="deckCards">
-        {cards.map((c, i) => (
-          <figure class="deck-card" data-pos={i} id={c.id}><img src={c.src} width="1400" height={c.height} alt={c.alt} loading="lazy" /></figure>
-        ))}
+    <div class="steps-track" id="deckTrack" style={`--steps:${cards.length}`}>
+      <div class="deck reveal steps-sticky" id="deck">
+        <div class="deck-cards" id="deckCards">
+          {cards.map((c, i) => (
+            <figure class="deck-card" data-pos={i} id={c.id}><img src={c.src} width="1400" height={c.height} alt={c.alt} loading="lazy" /></figure>
+          ))}
+        </div>
+        <div class="deck-tabs" role="tablist" aria-label="Écrans d’Ahla Cashflow">
+          {cards.map((c, i) => (
+            <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={c.id} data-card={c.id} tabindex={i === 0 ? undefined : -1} data-cap={c.cap}>{c.tab}</button>
+          ))}
+        </div>
+        <p class="deck-caption" id="deckCap" aria-live="polite">{cards[0].cap}</p>
       </div>
-      <div class="deck-tabs" role="tablist" aria-label="Écrans d’Ahla Cashflow">
-        {cards.map((c, i) => (
-          <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={c.id} data-card={c.id} tabindex={i === 0 ? undefined : -1} data-cap={c.cap}>{c.tab}</button>
-        ))}
-      </div>
-      <p class="deck-caption" id="deckCap" aria-live="polite">{cards[0].cap}</p>
     </div>
   </div>
 
@@ -65,7 +68,7 @@ const cards = [
 
 <style>
   /* ---- 3D screenshot deck ---- */
-  .deck{position:relative; perspective:1800px}
+  .deck{perspective:1800px} /* positionné par .steps-sticky */
   .deck-cards{position:relative; aspect-ratio:1400/735; transform-style:preserve-3d}
   .deck-card{
     position:absolute; inset:0; margin:0; border-radius:14px; overflow:hidden; border:1px solid var(--line); background:var(--surface);
@@ -84,20 +87,25 @@ const cards = [
 <script>
   import { byId } from '../scripts/motion';
   import { initTabs } from '../scripts/tabs';
+  import { initScrollSteps, observeStickyHeight } from '../scripts/scroll-steps';
 
-  const tabs = [...document.querySelectorAll<HTMLElement>('.deck-tabs [role="tab"]')];
+  const deck = byId('deck');
+  const tabs = [...deck.querySelectorAll<HTMLElement>('.deck-tabs [role="tab"]')];
   const cards = [...byId('deckCards').querySelectorAll<HTMLElement>('.deck-card')];
   const cap = byId('deckCap');
 
-  /* la carte choisie passe devant, les autres gardent leur ordre derrière */
-  const select = initTabs(tabs, (_i, tab) => {
+  /* the chosen card comes to the front, the others keep their order behind;
+     cards follow the scroll, a tab (or a card) click scrolls to its screen */
+  const show = initTabs(tabs, (_i, tab) => {
     const active = tab.dataset.card;
     const rest = cards.map((c) => c.id).filter((id) => id !== active);
     [active, ...rest].forEach((id, pos) => { byId(id ?? '').dataset.pos = String(pos); });
     cap.textContent = tab.dataset.cap ?? '';
-  });
+  }, (i) => goTo(i));
+  const goTo = initScrollSteps(byId('deckTrack'), deck, tabs.length, show);
+  observeStickyHeight(deck.closest('.project-grid')?.querySelector('.project-text') ?? deck);
   cards.forEach((c) => c.addEventListener('click', () => {
     const i = tabs.findIndex((t) => t.dataset.card === c.id);
-    if (c.dataset.pos !== '0') select(i);
+    if (c.dataset.pos !== '0') { show(i); goTo(i); }
   }));
 </script>

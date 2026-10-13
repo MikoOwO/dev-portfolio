@@ -99,8 +99,8 @@ export function createCashScene(canvas: HTMLCanvasElement, { seuil, budget, unit
     const L = [
       label('Caisse', cssVar('--ink'), 4),
       label('Budget du mois', cssVar('--ink'), 4.4),
-      label(`Seuil ${amount(seuil)} DT`, cssVar('--warn'), 3.6),
-      label(`Budget ${amount(budget)} DT`, cssVar('--ink-soft'), 3.6),
+      label(`Seuil ${amount(seuil)} €`, cssVar('--warn'), 3.6),
+      label(`Budget ${amount(budget)} €`, cssVar('--ink-soft'), 3.6),
     ];
     L[0].position.set(CX, -.8, 1.5); L[1].position.set(JX, -.8, 1.5);
     L[2].position.set(CX - 3.5, sy, 0); L[3].position.set(JX + 3, jh, 0);

@@ -1,5 +1,6 @@
 ---
 import CodeIcon from './icons/CodeIcon.astro';
+import ExternalIcon from './icons/ExternalIcon.astro';
 import Traceability from './Traceability.astro';
 
 const views = [
@@ -31,7 +32,7 @@ const views = [
 ---
 
 <article class="project" aria-labelledby="capx-title">
-  <div class="wrap project-grid">
+  <div class="wrap project-grid has-steps">
     <div class="project-text">
       <div class="p-meta">
         <span class="tag live">En production</span>
@@ -46,24 +47,27 @@ const views = [
         <li>Moteur de calcul financier en <strong>Python pur</strong>, séparé de la couche web et verrouillé par des tests automatisés.</li>
       </ul>
       <div class="p-links">
+        <a class="btn primary" href="https://capxvalue.com" target="_blank" rel="noopener"><ExternalIcon />Ouvrir capxvalue.com</a>
         <a class="btn" href="https://github.com/MikoOwO/capxvalue/tree/main" target="_blank" rel="noopener"><CodeIcon />Code source</a>
       </div>
     </div>
-    <div class="stage reveal" id="capxStage">
-      <div class="browser" id="capxBrowser">
-        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span id="capxUrl">{views[0].url}</span></div>
-        <div class="views">
+    <div class="steps-track" id="capxTrack" style={`--steps:${views.length}`}>
+      <div class="stage reveal steps-sticky" id="capxStage">
+        <div class="browser" id="capxBrowser">
+          <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span id="capxUrl">{views[0].url}</span></div>
+          <div class="views">
+            {views.map((v, i) => (
+              <img class:list={['view', { on: i === 0 }]} id={v.id} src={v.src} width="1400" height={v.height} alt={v.alt} loading="lazy" />
+            ))}
+          </div>
+        </div>
+        <div class="view-tabs" role="tablist" aria-label="Écrans de CapXValue">
           {views.map((v, i) => (
-            <img class:list={['view', { on: i === 0 }]} id={v.id} src={v.src} width="1400" height={v.height} alt={v.alt} loading="lazy" />
+            <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={v.id} data-view={v.id} data-url={v.url} tabindex={i === 0 ? undefined : -1} data-cap={v.cap}>{v.tab}</button>
           ))}
         </div>
+        <p class="deck-caption" id="viewCap" aria-live="polite">{views[0].cap}</p>
       </div>
-      <div class="view-tabs" role="tablist" aria-label="Écrans de CapXValue">
-        {views.map((v, i) => (
-          <button role="tab" type="button" aria-selected={i === 0 ? 'true' : 'false'} aria-controls={v.id} data-view={v.id} data-url={v.url} tabindex={i === 0 ? undefined : -1} data-cap={v.cap}>{v.tab}</button>
-        ))}
-      </div>
-      <p class="deck-caption" id="viewCap" aria-live="polite">{views[0].cap}</p>
     </div>
   </div>
 
@@ -72,7 +76,7 @@ const views = [
 
 <style>
   /* ---- tilting browser ---- */
-  .stage{position:relative; perspective:1600px}
+  .stage{perspective:1600px} /* positionné par .steps-sticky */
   .browser{
     border-radius:16px; overflow:hidden; background:var(--surface); border:1px solid var(--line);
     transform:rotateY(var(--ry, -10deg)) rotateX(var(--rx, 6deg)); transform-style:preserve-3d;
@@ -99,6 +103,7 @@ const views = [
 <script>
   import { byId, reducedMotion as reduced } from '../scripts/motion';
   import { initTabs } from '../scripts/tabs';
+  import { initScrollSteps, observeStickyHeight } from '../scripts/scroll-steps';
 
   /* tilt */
   const stage = byId('capxStage'), browser = byId('capxBrowser');
@@ -112,12 +117,14 @@ const views = [
     stage.addEventListener('pointerleave', () => { browser.style.removeProperty('--ry'); browser.style.removeProperty('--rx'); });
   }
 
-  /* screens */
+  /* screens: they follow the scroll; a tab click scrolls to its screen */
   const tabs = [...stage.querySelectorAll<HTMLElement>('.view-tabs [role="tab"]')];
   const cap = byId('viewCap'), url = byId('capxUrl');
-  initTabs(tabs, (i, tab) => {
+  const show = initTabs(tabs, (i, tab) => {
     tabs.forEach((t, j) => byId(t.dataset.view ?? '').classList.toggle('on', i === j));
     cap.textContent = tab.dataset.cap ?? '';
     url.textContent = tab.dataset.url ?? '';
-  });
+  }, (i) => goTo(i));
+  const goTo = initScrollSteps(byId('capxTrack'), stage, tabs.length, show);
+  observeStickyHeight(stage.closest('.project-grid')?.querySelector('.project-text') ?? stage);
 </script>
