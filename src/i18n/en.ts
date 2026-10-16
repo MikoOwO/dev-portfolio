@@ -18,8 +18,8 @@ export const en: Dict = {
   },
   hero: {
     who: 'Mélik Zaanouni, full-stack developer, MSc Data Science at EPFL',
-    lines: ['I build financial', 'tools that people', 'use every day.'],
-    lede: 'From reading an annual report with OCR to the dashboard a CEO opens every morning: I design, build and ship financial tools and AI products.',
+    lines: ['An idea for a', 'digital solution?', 'Let’s talk!'],
+    lede: 'I bring the best of AI to support you from design through to production, with solutions that make your teams more efficient and deliver measurable results.',
     ctaProjects: 'See the projects',
     ctaContact: 'Get in touch',
     hint: 'Hover over the city: each column is a data point.',

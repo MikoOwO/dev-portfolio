@@ -17,8 +17,8 @@ export const fr = {
   },
   hero: {
     who: 'Mélik Zaanouni, développeur full-stack, MSc Data Science à l’EPFL',
-    lines: ['Je développe des', 'outils financiers', 'utilisés au quotidien.'],
-    lede: 'De la lecture OCR d’un rapport annuel jusqu’au tableau de bord qu’un CEO ouvre chaque matin : je conçois, je code et je mets en production des outils financiers et des produits d’IA.',
+    lines: ['Une idée d’une', 'solution digitale,', 'parlons en\u00a0!'],
+    lede: 'Je vous apporte le meilleur de l’IA pour vous accompagner depuis la conception jusqu’à la mise en production de solutions qui vous font gagner en efficacité avec des résultats mesurables.',
     ctaProjects: 'Voir les projets',
     ctaContact: 'Me contacter',
     hint: 'Survolez la ville : chaque colonne est une donnée.',
