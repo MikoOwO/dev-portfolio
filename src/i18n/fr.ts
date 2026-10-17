@@ -254,8 +254,6 @@ export const fr = {
     github: 'GitHub',
     basedIn: 'Basé à',
     city: 'Lausanne, Suisse',
-    nationality: 'Nationalités',
-    nationalities: 'Française et tunisienne',
   },
 };
 

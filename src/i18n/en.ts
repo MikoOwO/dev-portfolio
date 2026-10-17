@@ -254,7 +254,5 @@ export const en: Dict = {
     github: 'GitHub',
     basedIn: 'Based in',
     city: 'Lausanne, Switzerland',
-    nationality: 'Nationalities',
-    nationalities: 'French and Tunisian',
   },
 };
