@@ -44,7 +44,7 @@ export const en: Dict = {
     views: {
       home: {
         tab: 'The site', url: 'capxvalue',
-        alt: 'CapXValue home page, headed “Le business plan dont chaque chiffre se justifie” (the business plan where every figure is justified).',
+        alt: 'CapXValue home page, headed “Votre conseil en corporate finance digital” (your digital corporate finance advisor), with a preview of the income statement.',
         cap: 'The promise: a seven-year business plan in which every amount can be justified.',
       },
       hist: {

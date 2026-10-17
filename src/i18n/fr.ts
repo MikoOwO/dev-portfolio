@@ -43,7 +43,7 @@ export const fr = {
     views: {
       home: {
         tab: 'Le site', url: 'capxvalue',
-        alt: 'Page d’accueil de CapXValue : « Le business plan dont chaque chiffre se justifie ».',
+        alt: 'Page d’accueil de CapXValue : « Votre conseil en corporate finance digital », avec un aperçu du compte de résultat.',
         cap: 'La promesse : un business plan sur sept ans dont chaque montant se justifie.',
       },
       hist: {
