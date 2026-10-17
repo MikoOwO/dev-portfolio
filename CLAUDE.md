@@ -11,9 +11,9 @@ Transformer le prototype en projet Astro statique, maintenable, déployé sur Ve
 ## Contenu (ne pas inventer de chiffres ni de liens)
 - Hero : ville 3D de colonnes (three.js, InstancedMesh) qui réagit au curseur.
 - CapXValue (projet principal, capxvalue.com) : navigateur incliné avec 4 écrans en onglets qui défilent au scroll sur ordinateur (simples onglets sur téléphone), graphe de traçabilité interactif (Résultat net 2028 = 5 306, EBITDA = 9 866, CA 2028 = 59 075, CA 2025 = 46 250, note 6.1 du rapport annuel 2024).
-- Ahla Cashflow : pile 3D de 3 captures qui défilent au scroll sur ordinateur (simples onglets sur téléphone) + jeu « Tenez la caisse d'octobre » (5 transactions, seuil 15 000 €, budget 45 000 €, 1 bloc = 2 000 €).
+- Ahla Cashflow : pile 3D de 3 captures qui défilent au scroll sur ordinateur (simples onglets sur téléphone). Le jeu « Tenez la caisse d'octobre » (5 transactions, seuil 15 000 €, budget 45 000 €, 1 bloc = 2 000 €) est masqué (`showGame` dans `src/config.ts`), code conservé.
 - Tous les montants affichés sur le site sont en euros.
-- ArchiTech : plan 2D qui s'élève en 3D (three.js), lien vers la démo vidéo (Google Drive). Captures à venir.
+- ArchiTech : plan 2D qui s'élève en 3D (three.js), lien vers la démo vidéo (Google Drive). Projet masqué (`showArchitech` dans `src/config.ts`), code conservé ; la section Projets annonce alors deux produits.
 - Marque : « M-Solutions, par Mélik Zaanouni » (logo dans l'en-tête, logo clair sur fond transparent). Textes à la première personne du pluriel (« nous »).
 - « Ils nous font confiance » (logos Capinvest Partners, CapXValue, Ahla) puis section Capinvest Partners avec deux captures.
 - Parcours (frise) : masqué, le code est conservé (`showBackground` dans `src/config.ts`). Outils, contact (mail EPFL).

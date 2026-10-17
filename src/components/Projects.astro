@@ -3,6 +3,7 @@ import CapXValue from './CapXValue.astro';
 import AhlaCashflow from './AhlaCashflow.astro';
 import ArchiTech from './ArchiTech.astro';
 import { useTranslations, type Lang } from '../i18n';
+import { showArchitech } from '../config';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -11,10 +12,10 @@ const t = useTranslations(lang).projects;
 
 <section id="projets" aria-labelledby="projets-title">
   <div class="wrap sec-head">
-    <h2 id="projets-title">{t.title}</h2>
-    <p>{t.intro}</p>
+    <h2 id="projets-title">{showArchitech ? t.title : t.titleTwo}</h2>
+    <p>{showArchitech ? t.intro : t.introTwo}</p>
   </div>
   <CapXValue lang={lang} />
   <AhlaCashflow lang={lang} />
-  <ArchiTech lang={lang} />
+  {showArchitech && <ArchiTech lang={lang} />}
 </section>

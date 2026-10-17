@@ -2,6 +2,7 @@
 import CodeIcon from './icons/CodeIcon.astro';
 import ExternalIcon from './icons/ExternalIcon.astro';
 import CashGame from './CashGame.astro';
+import { showGame } from '../config';
 import { useTranslations, type Lang } from '../i18n';
 
 interface Props { lang: Lang }
@@ -51,7 +52,7 @@ const cards = [
     </div>
   </div>
 
-  <CashGame lang={lang} />
+  {showGame && <CashGame lang={lang} />}
 </article>
 
 <style>
