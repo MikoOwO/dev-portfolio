@@ -12,7 +12,6 @@ export const en: Dict = {
   },
   header: {
     brandLabel: 'M-Solutions, back to top',
-    brandBy: 'by Mélik Zaanouni',
     navLabel: 'Main navigation',
     nav: { projects: 'Projects', background: 'Background', contact: 'Contact' },
     langLabel: 'Language',
@@ -245,7 +244,6 @@ export const en: Dict = {
   },
   footer: {
     copy: '© 2026 M-Solutions, by Mélik Zaanouni',
-    site: 'capinvest-partners.com',
   },
   contact: {
     title: 'A product to build? Let’s talk.',

@@ -11,7 +11,6 @@ export const fr = {
   },
   header: {
     brandLabel: 'M-Solutions, retour en haut',
-    brandBy: 'par Mélik Zaanouni',
     navLabel: 'Navigation principale',
     nav: { projects: 'Projets', background: 'Parcours', contact: 'Contact' },
     langLabel: 'Langue',
@@ -245,7 +244,6 @@ export const fr = {
   },
   footer: {
     copy: '© 2026 M-Solutions, par Mélik Zaanouni',
-    site: 'capinvest-partners.com',
   },
   contact: {
     title: 'Un produit à construire ? Parlons-en.',

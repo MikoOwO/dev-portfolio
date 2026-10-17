@@ -16,7 +16,7 @@ const links = [
 <header class="top" id="top">
   <div class="wrap top-inner">
     <a class="brand" href="#main" aria-label={t.brandLabel}>
-      <span class="brand-name">M-Solutions</span><span class="brand-by">{t.brandBy}</span>
+      <img src="/images/logo-m-solutions.webp" width="908" height="269" alt="M-Solutions" />
     </a>
     <nav class="nav" aria-label={t.navLabel}>
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
@@ -38,9 +38,8 @@ const links = [
   }
   .top.scrolled{background:color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border-color:var(--line-soft)}
   .top-inner{display:flex; align-items:center; gap:24px; height:72px}
-  .brand{font-family:var(--display); text-decoration:none; display:flex; flex-direction:column; line-height:1.15; margin-right:auto}
-  .brand-name{font-weight:700; letter-spacing:-.02em; font-size:20px}
-  .brand-by{font-size:13px; color:var(--ink-faint)}
+  .brand{display:flex; align-items:center; margin-right:auto}
+  .brand img{height:44px; width:auto}
   .nav{display:flex; gap:4px}
   .nav a{font-family:var(--display); font-weight:500; font-size:16px; text-decoration:none; color:var(--ink-soft); padding:10px 14px; border-radius:999px; transition:color .2s ease, background-color .2s ease}
   .nav a:hover{color:var(--ink); background:var(--line-soft)}

@@ -14,7 +14,9 @@ Transformer le prototype en projet Astro statique, maintenable, déployé sur Ve
 - Ahla Cashflow : pile 3D de 3 captures qui défilent au scroll sur ordinateur (simples onglets sur téléphone) + jeu « Tenez la caisse d'octobre » (5 transactions, seuil 15 000 €, budget 45 000 €, 1 bloc = 2 000 €).
 - Tous les montants affichés sur le site sont en euros.
 - ArchiTech : plan 2D qui s'élève en 3D (three.js), lien vers la démo vidéo (Google Drive). Captures à venir.
-- Parcours (frise), outils, contact.
+- Marque : « M-Solutions, par Mélik Zaanouni » (logo dans l'en-tête, logo clair sur fond transparent). Textes à la première personne du pluriel (« nous »).
+- « Ils nous font confiance » (logos Capinvest Partners, CapXValue, Ahla) puis section Capinvest Partners avec deux captures.
+- Parcours (frise) : masqué, le code est conservé (`showBackground` dans `src/config.ts`). Outils, contact (mail EPFL).
 
 ## Design system (à respecter)
 - Palette « Abysse », variables CSS sur :root : --bg #050E1F, --bg-deep #020815, --surface #0A1931, --surface-2 #10264A, --line #1C3558, --ink #DDE8F6, --ink-soft #91A7C6, --ink-faint #6E86A9, --accent #7FD6FF, --warn #FFA26B.
