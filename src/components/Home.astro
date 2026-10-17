@@ -8,6 +8,9 @@ import Parcours from './Parcours.astro';
 import Outils from './Outils.astro';
 import Contact from './Contact.astro';
 import Footer from './Footer.astro';
+import Trust from './Trust.astro';
+import Capinvest from './Capinvest.astro';
+import { showBackground } from '../config';
 import type { Lang } from '../i18n';
 
 interface Props { lang: Lang }
@@ -18,10 +21,12 @@ const { lang } = Astro.props;
   <Header lang={lang} />
   <main id="main">
     <Hero lang={lang} />
+    <Trust lang={lang} />
     <Projects lang={lang} />
-    <Parcours lang={lang} />
+    <Capinvest lang={lang} />
+    {showBackground && <Parcours lang={lang} />}
     <Outils lang={lang} />
     <Contact lang={lang} />
   </main>
-  <Footer />
+  <Footer lang={lang} />
 </BaseLayout>

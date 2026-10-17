@@ -1,5 +1,6 @@
 ---
 import { languages, useTranslations, type Lang } from '../i18n';
+import { showBackground } from '../config';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
@@ -7,7 +8,7 @@ const t = useTranslations(lang).header;
 
 const links = [
   { href: '#projets', label: t.nav.projects },
-  { href: '#parcours', label: t.nav.background },
+  ...(showBackground ? [{ href: '#parcours', label: t.nav.background }] : []),
   { href: '#contact', label: t.nav.contact },
 ];
 ---
@@ -15,7 +16,7 @@ const links = [
 <header class="top" id="top">
   <div class="wrap top-inner">
     <a class="brand" href="#main" aria-label={t.brandLabel}>
-      <span class="brand-mark" aria-hidden="true">MZ</span><span>Mélik Zaanouni</span>
+      <span class="brand-name">M-Solutions</span><span class="brand-by">{t.brandBy}</span>
     </a>
     <nav class="nav" aria-label={t.navLabel}>
       {links.map((l) => <a href={l.href}>{l.label}</a>)}
@@ -37,8 +38,9 @@ const links = [
   }
   .top.scrolled{background:color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter:blur(14px); backdrop-filter:blur(14px); border-color:var(--line-soft)}
   .top-inner{display:flex; align-items:center; gap:24px; height:72px}
-  .brand{font-family:var(--display); font-weight:700; letter-spacing:-.02em; font-size:19px; text-decoration:none; display:flex; align-items:center; gap:10px; margin-right:auto}
-  .brand-mark{width:30px; height:30px; display:grid; place-items:center; border:1.5px solid var(--accent); border-radius:8px; font-size:13px; color:var(--accent); font-weight:700; letter-spacing:0}
+  .brand{font-family:var(--display); text-decoration:none; display:flex; flex-direction:column; line-height:1.15; margin-right:auto}
+  .brand-name{font-weight:700; letter-spacing:-.02em; font-size:20px}
+  .brand-by{font-size:13px; color:var(--ink-faint)}
   .nav{display:flex; gap:4px}
   .nav a{font-family:var(--display); font-weight:500; font-size:16px; text-decoration:none; color:var(--ink-soft); padding:10px 14px; border-radius:999px; transition:color .2s ease, background-color .2s ease}
   .nav a:hover{color:var(--ink); background:var(--line-soft)}

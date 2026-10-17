@@ -5,12 +5,13 @@
  */
 export const fr = {
   meta: {
-    title: 'Mélik Zaanouni, développeur full-stack',
-    description: 'Portfolio de Mélik Zaanouni : CapXValue, Ahla Cashflow, ArchiTech. Full-stack, IA et moteurs de calcul financier.',
+    title: 'M-Solutions, par Mélik Zaanouni',
+    description: 'M-Solutions, par Mélik Zaanouni : CapXValue, Ahla Cashflow, ArchiTech. Full-stack, IA et moteurs de calcul financier.',
     skip: 'Aller au contenu',
   },
   header: {
-    brandLabel: 'Mélik Zaanouni, retour en haut',
+    brandLabel: 'M-Solutions, retour en haut',
+    brandBy: 'par Mélik Zaanouni',
     navLabel: 'Navigation principale',
     nav: { projects: 'Projets', background: 'Parcours', contact: 'Contact' },
     langLabel: 'Langue',
@@ -18,9 +19,9 @@ export const fr = {
   hero: {
     who: 'Mélik Zaanouni, développeur full-stack, MSc Data Science à l’EPFL',
     lines: ['Une idée d’une', 'solution digitale,', 'parlons en\u00a0!'],
-    lede: 'Je vous apporte le meilleur de l’IA pour vous accompagner depuis la conception jusqu’à la mise en production de solutions qui vous font gagner en efficacité avec des résultats mesurables.',
+    lede: 'Nous vous apportons le meilleur de l’IA pour vous accompagner depuis la conception jusqu’à la mise en production de solutions qui vous font gagner en efficacité avec des résultats mesurables.',
     ctaProjects: 'Voir les projets',
-    ctaContact: 'Me contacter',
+    ctaContact: 'Nous contacter',
     hint: 'Survolez la ville : chaque colonne est une donnée.',
   },
   projects: {
@@ -170,10 +171,10 @@ export const fr = {
     sub: 'L’IA qui passe d’un programme architectural à un bâtiment posé sur sa carte.',
     list: [
       'Plateforme qui automatise la <strong>faisabilité réglementaire</strong>, les plans 2D/3D et l’estimation des coûts.',
-      'J’ai débloqué la <strong>génération de plans 3D</strong> : outils d’agent trouvés dans le logiciel open source Pascal, faisabilité prouvée avec Claude Code, puis intégration.',
+      'Nous avons débloqué la <strong>génération de plans 3D</strong> : outils d’agent trouvés dans le logiciel open source Pascal, faisabilité prouvée avec Claude Code, puis intégration.',
       'Ajout de la <strong>génération de façades 3D</strong> à partir d’images (NanoBanana, API Meshy) et placement des bâtiments sur une carte 3D, dans leur environnement réel.',
     ],
-    prize: '<strong>1er prix, Talan Summer Camp 2026</strong>Face à 10 équipes d’étudiants de l’EPFL, HEC et Centrale. J’ai porté le pitch final.',
+    prize: '<strong>1er prix, Talan Summer Camp 2026</strong>Face à 10 équipes d’étudiants de l’EPFL, HEC et Centrale. Nous avons porté le pitch final.',
     demo: 'Voir la démo',
     canvasLabel: 'Plan d’un logement qui s’élève en volume 3D, inspiré du pipeline ArchiTech.',
     plan: { to3d: 'Passer en 3D', to2d: 'Revenir au plan 2D', drag: 'Faites glisser pour tourner', built: 'Volume généré depuis le plan' },
@@ -219,8 +220,8 @@ export const fr = {
     ] as { year: string; title: string; text: string; place?: string; highlight?: boolean }[],
   },
   tools: {
-    title: 'Avec quoi je travaille.',
-    intro: 'Python pour la data et les calculs, TypeScript pour les interfaces : les outils que j’utilise au quotidien sur mes projets.',
+    title: 'Avec quoi nous travaillons.',
+    intro: 'Python pour la data et les calculs, TypeScript pour les interfaces : les outils que nous utilisons au quotidien sur nos projets.',
     groups: [
       { title: 'Data et IA', text: 'Python, NumPy, Pandas, machine learning, intégration de LLM, RAG, agents IA.' },
       { title: 'Backend', text: 'FastAPI, Node.js, PostgreSQL, SQLAlchemy, Docker.' },
@@ -229,6 +230,22 @@ export const fr = {
       { title: 'Langages', text: 'Python, TypeScript et JavaScript, Java, Scala, C.' },
       { title: 'Langues', text: 'Français et arabe natifs, anglais B2, espagnol B1.' },
     ],
+  },
+  trust: {
+    title: 'Ils nous font confiance',
+  },
+  capinvest: {
+    title: 'Capinvest Partners',
+    intro: 'Site de Capinvest Partners, conseil en finance d’entreprise en Europe, en Afrique et au Moyen-Orient.',
+    open: 'Visiter capinvest-partners.com',
+    alts: [
+      'Page d’accueil de Capinvest Partners : « Optimisez les termes de vos opérations en capital ».',
+      'Section expertise de Capinvest Partners : toute la chaîne du conseil, de la stratégie au closing.',
+    ],
+  },
+  footer: {
+    copy: '© 2026 M-Solutions, par Mélik Zaanouni',
+    site: 'capinvest-partners.com',
   },
   contact: {
     title: 'Un produit à construire ? Parlons-en.',

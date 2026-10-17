@@ -6,12 +6,13 @@ import type { Dict } from './fr';
 
 export const en: Dict = {
   meta: {
-    title: 'Mélik Zaanouni, full-stack developer',
-    description: 'Portfolio of Mélik Zaanouni: CapXValue, Ahla Cashflow, ArchiTech. Full-stack development, AI and financial calculation engines.',
+    title: 'M-Solutions, by Mélik Zaanouni',
+    description: 'M-Solutions, by Mélik Zaanouni: CapXValue, Ahla Cashflow, ArchiTech. Full-stack development, AI and financial calculation engines.',
     skip: 'Skip to content',
   },
   header: {
-    brandLabel: 'Mélik Zaanouni, back to top',
+    brandLabel: 'M-Solutions, back to top',
+    brandBy: 'by Mélik Zaanouni',
     navLabel: 'Main navigation',
     nav: { projects: 'Projects', background: 'Background', contact: 'Contact' },
     langLabel: 'Language',
@@ -19,7 +20,7 @@ export const en: Dict = {
   hero: {
     who: 'Mélik Zaanouni, full-stack developer, MSc Data Science at EPFL',
     lines: ['An idea for a', 'digital solution?', 'Let’s talk!'],
-    lede: 'I bring the best of AI to support you from design through to production, with solutions that make your teams more efficient and deliver measurable results.',
+    lede: 'We bring the best of AI to support you from design through to production, with solutions that make your teams more efficient and deliver measurable results.',
     ctaProjects: 'See the projects',
     ctaContact: 'Get in touch',
     hint: 'Hover over the city: each column is a data point.',
@@ -170,10 +171,10 @@ export const en: Dict = {
     sub: 'AI that goes from an architectural brief to a building placed on its map.',
     list: [
       'Platform that automates <strong>regulatory feasibility</strong>, 2D/3D plans and cost estimates.',
-      'I unblocked <strong>3D floor plan generation</strong>: I found agent tools in the open-source software Pascal, proved feasibility with Claude Code, then integrated it.',
+      'We unblocked <strong>3D floor plan generation</strong>: we found agent tools in the open-source software Pascal, proved feasibility with Claude Code, then integrated it.',
       'Added <strong>3D facade generation</strong> from images (NanoBanana, Meshy API) and placed the buildings on a 3D map, in their real surroundings.',
     ],
-    prize: '<strong>1st prize, Talan Summer Camp 2026</strong>Against 10 teams of students from EPFL, HEC and Centrale. I gave the final pitch.',
+    prize: '<strong>1st prize, Talan Summer Camp 2026</strong>Against 10 teams of students from EPFL, HEC and Centrale. We gave the final pitch.',
     demo: 'Watch the demo',
     canvasLabel: 'Floor plan of a home rising into a 3D volume, inspired by the ArchiTech pipeline.',
     plan: { to3d: 'Switch to 3D', to2d: 'Back to the 2D plan', drag: 'Drag to rotate', built: 'Volume generated from the plan' },
@@ -219,8 +220,8 @@ export const en: Dict = {
     ],
   },
   tools: {
-    title: 'What I work with.',
-    intro: 'Python for data and calculations, TypeScript for interfaces: the tools I use every day on my projects.',
+    title: 'What we work with.',
+    intro: 'Python for data and calculations, TypeScript for interfaces: the tools we use every day on our projects.',
     groups: [
       { title: 'Data and AI', text: 'Python, NumPy, Pandas, machine learning, LLM integration, RAG, AI agents.' },
       { title: 'Backend', text: 'FastAPI, Node.js, PostgreSQL, SQLAlchemy, Docker.' },
@@ -229,6 +230,22 @@ export const en: Dict = {
       { title: 'Programming languages', text: 'Python, TypeScript and JavaScript, Java, Scala, C.' },
       { title: 'Languages', text: 'French and Arabic (native), English B2, Spanish B1.' },
     ],
+  },
+  trust: {
+    title: 'They trust us',
+  },
+  capinvest: {
+    title: 'Capinvest Partners',
+    intro: 'Website of Capinvest Partners, corporate finance advisory in Europe, Africa and the Middle East.',
+    open: 'Visit capinvest-partners.com',
+    alts: [
+      'Capinvest Partners home page, headline “Optimisez les termes de vos opérations en capital” (optimise the terms of your capital operations).',
+      'Capinvest Partners expertise section: the full advisory chain, from strategy to closing.',
+    ],
+  },
+  footer: {
+    copy: '© 2026 M-Solutions, by Mélik Zaanouni',
+    site: 'capinvest-partners.com',
   },
   contact: {
     title: 'A product to build? Let’s talk.',

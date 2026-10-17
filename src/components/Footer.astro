@@ -1,5 +1,17 @@
-<div class="wrap"><footer><span>© 2026 Mélik Zaanouni</span></footer></div>
+---
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).footer;
+---
+
+<div class="wrap"><footer>
+  <span>{t.copy}</span>
+  <a href="https://capinvest-partners.com" target="_blank" rel="noopener">{t.site}</a>
+</footer></div>
 
 <style>
   footer{padding-block:28px 40px; font-family:var(--display); font-size:14px; color:var(--ink-faint); display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; border-top:1px solid var(--line-soft)}
+  footer a{color:var(--ink-soft); text-underline-offset:4px; text-decoration-color:var(--line)}
+  footer a:hover{text-decoration-color:var(--accent)}
 </style>

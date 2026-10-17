@@ -1,0 +1,38 @@
+---
+/* Captures du site de Capinvest Partners, avec le lien vers le site. */
+import { useTranslations, type Lang } from '../i18n';
+
+interface Props { lang: Lang }
+const t = useTranslations(Astro.props.lang).capinvest;
+
+const shots = [
+  { src: '/images/capinvest-accueil.webp', alt: t.alts[0] },
+  { src: '/images/capinvest-expertise.webp', alt: t.alts[1] },
+];
+---
+
+<section class="capinvest" aria-labelledby="capinvest-title">
+  <div class="wrap sec-head">
+    <h2 id="capinvest-title">{t.title}</h2>
+    <p>{t.intro}</p>
+  </div>
+  <div class="wrap capinvest-shots">
+    {shots.map((s) => (
+      <figure class="reveal">
+        <img src={s.src} width="1400" height="875" alt={s.alt} loading="lazy" />
+      </figure>
+    ))}
+  </div>
+  <div class="wrap capinvest-links">
+    <a class="btn primary" href="https://capinvest-partners.com" target="_blank" rel="noopener">{t.open}</a>
+  </div>
+</section>
+
+<style>
+  .capinvest{padding-bottom:clamp(56px, 7vw, 96px)}
+  .capinvest-shots{display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:clamp(20px, 3vw, 36px)}
+  .capinvest-shots figure{margin:0; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--surface)}
+  .capinvest-shots img{width:100%; height:auto}
+  .capinvest-links{margin-top:36px}
+  @media (max-width:860px){ .capinvest-shots{grid-template-columns:1fr} }
+</style>
