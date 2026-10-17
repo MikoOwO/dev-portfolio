@@ -21,7 +21,6 @@ export const fr = {
     lede: 'Nous vous apportons le meilleur de l’IA pour vous accompagner depuis la conception jusqu’à la mise en production de solutions qui vous font gagner en efficacité avec des résultats mesurables.',
     ctaProjects: 'Voir les projets',
     ctaContact: 'Nous contacter',
-    hint: 'Survolez la ville : chaque colonne est une donnée.',
   },
   projects: {
     title: 'Trois produits, du moteur de calcul à la façade 3D.',

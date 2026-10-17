@@ -22,7 +22,6 @@ export const en: Dict = {
     lede: 'We bring the best of AI to support you from design through to production, with solutions that make your teams more efficient and deliver measurable results.',
     ctaProjects: 'See the projects',
     ctaContact: 'Get in touch',
-    hint: 'Hover over the city: each column is a data point.',
   },
   projects: {
     title: 'Three products, from calculation engine to 3D facade.',

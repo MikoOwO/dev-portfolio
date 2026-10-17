@@ -20,10 +20,6 @@ const t = useTranslations(Astro.props.lang).hero;
       </div>
     </div>
   </div>
-  <p class="hero-hint" aria-hidden="true">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l14 8-6 2-3 6z"></path></svg>
-    {t.hint}
-  </p>
 </section>
 
 <style>
@@ -41,12 +37,9 @@ const t = useTranslations(Astro.props.lang).hero;
   .hero h1 .line > span{display:inline-block}
   .hero-lede{margin-top:32px; max-width:56ch; font-size:clamp(18px, 1.3vw + 8px, 22px); color:var(--ink-soft); line-height:1.6}
   .hero-actions{margin-top:40px; display:flex; flex-wrap:wrap; gap:14px; align-items:center}
-  .hero-hint{position:absolute; right:clamp(20px, 5vw, 64px); bottom:32px; font-family:var(--display); font-size:14px; color:var(--ink-faint); display:flex; align-items:center; gap:10px; max-width:240px; text-align:right}
-  .hero-hint svg{width:22px; height:22px; flex:none; color:var(--accent)}
   @media (max-width:760px){
     .hero::after{background:linear-gradient(to bottom, color-mix(in srgb, var(--bg) 55%, transparent) 20%, color-mix(in srgb, var(--bg) 85%, transparent))}
-    .hero-hint{display:none}
-  }
+    }
 
   /* load choreography: one orchestrated moment */
   @keyframes rise{from{transform:translateY(105%)} to{transform:none}}
@@ -57,7 +50,6 @@ const t = useTranslations(Astro.props.lang).hero;
   .hero-who{animation:fadeUp .8s var(--ease-out) .05s both}
   .hero-lede{animation:fadeUp .9s var(--ease-out) .45s both}
   .hero-actions{animation:fadeUp .9s var(--ease-out) .6s both}
-  .hero-hint{animation:fadeUp .9s var(--ease-out) 1.4s both}
 </style>
 
 <script>
