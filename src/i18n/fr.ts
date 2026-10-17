@@ -26,7 +26,6 @@ export const fr = {
     title: 'Trois produits, du moteur de calcul à la façade 3D.',
     intro: 'Deux sont en production et utilisés tous les jours. Le troisième a remporté le premier prix du Talan Summer Camp.',
     titleTwo: 'Deux produits, du moteur de calcul à la trésorerie.',
-    introTwo: 'Les deux sont en production et utilisés tous les jours.',
     sourceCode: 'Code source',
   },
   capx: {

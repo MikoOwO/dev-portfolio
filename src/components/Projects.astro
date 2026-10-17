@@ -11,9 +11,9 @@ const t = useTranslations(lang).projects;
 ---
 
 <section id="projets" aria-labelledby="projets-title">
-  <div class="wrap sec-head">
+  <div class:list={['wrap', 'sec-head', { solo: !showArchitech }]}>
     <h2 id="projets-title">{showArchitech ? t.title : t.titleTwo}</h2>
-    <p>{showArchitech ? t.intro : t.introTwo}</p>
+    {showArchitech && <p>{t.intro}</p>}
   </div>
   <CapXValue lang={lang} />
   <AhlaCashflow lang={lang} />

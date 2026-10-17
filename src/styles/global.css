@@ -69,6 +69,9 @@ section{position:relative; z-index:1}
 .sec-head h2{font-size:clamp(36px, 4.6vw, 68px); letter-spacing:-.03em}
 .sec-head p{color:var(--ink-soft)}
 @media (max-width:860px){ .sec-head{grid-template-columns:1fr} }
+/* titre seul : il prend toute la largeur */
+.sec-head.solo{grid-template-columns:1fr}
+.sec-head.solo h2{max-width:none; font-size:clamp(40px, 6.4vw, 96px); text-wrap:pretty}
 
 /* ---------- Gabarit commun des projets ---------- */
 .project{padding-block:clamp(56px, 7vw, 96px); border-top:1px solid var(--line)}

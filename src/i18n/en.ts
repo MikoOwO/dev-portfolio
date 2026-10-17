@@ -27,7 +27,6 @@ export const en: Dict = {
     title: 'Three products, from calculation engine to 3D facade.',
     intro: 'Two are in production and used every day. The third won first prize at the Talan Summer Camp.',
     titleTwo: 'Two products, from calculation engine to cash management.',
-    introTwo: 'Both are in production and used every day.',
     sourceCode: 'Source code',
   },
   capx: {
